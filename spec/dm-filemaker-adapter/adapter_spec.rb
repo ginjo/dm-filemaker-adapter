@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Dm::Filemaker::Adapter do
+describe DataMapper::Adapters::FilemakerAdapter do
   it 'has a version number' do
-    expect(Dm::Filemaker::Adapter::VERSION).not_to be nil
+    expect(DataMapper::Adapters::FilemakerAdapter::VERSION).not_to be nil
   end
 
   it 'does something useful' do
