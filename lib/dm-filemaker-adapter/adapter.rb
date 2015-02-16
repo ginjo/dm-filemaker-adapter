@@ -1,38 +1,4 @@
-# TODO:
-# √ Fix RFM so it handles full-path yaml file spec for sax parser template :template option.
-# * Fix 'read' so it handles rfm find(rec_id) types of queries.
-# * Handle searching by record_id. Will need to translate that into FMP query '-recid=idxxx'
-# √ Make sure 'read' handles all kinds of rfm queries (hash, array of hashes, option hashes, any combo of these).
-# √ Handle rfm response, and figure out how to update dm resourse with response data. 
-# √ Handle 'destroy' adapter method.
-# - Fix Rfm so ruby date/time values can be pushed to fmp using the layout object.
-#		This is also necessary to do finds with dates.
-# * Find out whats up with property :writer=>false not working for mod_id and record_id.
-# * Create accessors for rfm meta data, including layout meta and resultset meta.
-# * Handle rfm related sets (portals).
-# √ Undo hard :limit setting in fmp_options method.
-# √ Reload doesn't work correctly. (hmm... now it does work).
-# • Move :template option to a more global place in dm-filemaker (possibly pushing it to Rfm.config ?).
-# √ Create module to add methods to dm Model specifically for dm-filemaker (to be loaded with 'include DataMapper::Resource' somehow).
-# √ Find place to hook in creation of properties :record_id and :mod_id. Maybe DataMapper.finalize method?
-# √ Fix to work with dm-aggregates.
-# √ Fix sort field - dm is inserting entire property object into uri (observe the query for 'model.last' to see whats going on).
-# √ Fix sort direction.
-# √ read now handles compound queries:
-#		u = User.all(:username=>login, :id=>'>0') | U.all(:email=>login, :id=>'>0')
-# - But still need to fix compound 'get' query: User.get ['id1', 'id2']
-#		NO, dm can't do this.
-# √ Fix this:   User.all(:username=>login) | U.all(:email=>login)
-# √ Handle operations other than EqualTo.
-# • Ensure ruby dates & times can be entered in create and update actions.
-
-
-# * RFM: Make layout#count so it handles empty query (should do :all instead of :find), just like here in the dm adapter.
-#		Or should it do  '-view' when there are no criteria?
-
-
 # Property & field names in dm-filemaker-adapter models must be declared lowercase, regardless of what they are in FMP.
-
 
 module DataMapper
 	[Resource, Model, Adapters]

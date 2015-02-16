@@ -13,3 +13,7 @@
 *.a
 mkmf.log
 /vendor/
+todo.txt
+.DS_Store
+
+.travis.yml
