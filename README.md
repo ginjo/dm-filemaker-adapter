@@ -1,15 +1,14 @@
 # dm-filemaker-adapter
 
-This datastore adapter for DataMapper provides all of DataMapper's basic CRUD operations
-using Filemaker as the datastore.
+A Filemaker adapter for DataMapper, allowing DataMapper to use Filemaker Server as a datastore.
+
+dm-filemaker-adapter uses the ginjo-rfm gem as the backend command and xml parser. Ginjo-rfm is a full featured filemaker-ruby adapter that exposes most of Filemaker's xml interface functionality in ruby. dm-filemaker-adapter doesn't tap into all of rfm's features, but rather, it provides DataMapper the ability to use Filemaker Server as a backend datastore. All of the basic functionality of DataMapper's CRUD interface is supported, including compound queries and OR queries (using Filemaker's -findquery command), query operators like :field.gt=>..., lazy-loading where possible, first & last record, aggregate queries, ranges, field mapping, and more.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-```ruby
-gem 'dm-filemaker-adapter'
-```
+    gem 'dm-filemaker-adapter'
 
 And then execute:
 
@@ -21,27 +20,37 @@ Or install it yourself as:
 
 ## Usage
 
-You must also install the Filemaker-to-ruby gem 'ginjo-rfm .
-dm-filemaker-adapter uses rfm to handle the underlying calls to Filemaker server and the parsing of the xml responses.
+    DB_CONFIG = {
+      adapter:            'filemaker',
+      host:               'my.server.com',
+      account_name:       'my-user-name',
+      password:           'xxxxxxxxxx',
+      database:           'db-name'   
+    }
 
-So, a simple yet functional Gemfile would look something like this.
-		gem 'data_mapper'
-		gem 'dm-filemaker-adapter'
-		gem 'ginjo-rfm'
-		
-Ginjo-rfm will use the built-in ruby xml parser, REXML, unless you install one of the other supported parsers.
-		gem 'data_mapper'
-		gem 'dm-filemaker-adapter'
-		gem 'ginjo-rfm'
-		
-		gem 'ox'  # or 'nokogiri' or 'libxml-ruby'
+    DataMapper.setup(:default, DB_CONFIG)
+    
+    class User
+      include DataMapper::Resource
+      storage_names[:default] = 'user_xml'  # This is your filemaker layout for the user table.
 
+      # Property & field names in this list must be lowercase, regardless of what they are in Filemaker.
 
+      property :userid, String, :key=>true, :required=>false
+      property :email, String
+      property :login, String, :field=>'username'
+      property :updated, DateTime, :field=>'updated_at'
+      property :encrypted_password, BCryptPassword
+    end
 
-## Contributing
+    DataMapper.finalize
 
-1. Fork it ( https://github.com/[my-github-username]/dm-filemaker-adapter/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+    User.get 'usr1035'
+    User.first :email => 'wbr'
+    User.all :updated.gt => 3.days.ago
+    
+    
+    
+    
+    
+
