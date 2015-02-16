@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   
   spec.add_dependency "data_mapper"
+  spec.add_dependency "ginjo-rfm"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"

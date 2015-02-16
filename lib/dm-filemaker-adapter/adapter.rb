@@ -1,8 +1,3 @@
-# require 'rfm'
-# require 'dm-core'
-
-# Property & field names in dm-filemaker-adapter models must be declared lowercase, regardless of what they are in FMP.
-
 # TODO:
 # √ Fix RFM so it handles full-path yaml file spec for sax parser template :template option.
 # * Fix 'read' so it handles rfm find(rec_id) types of queries.
@@ -34,6 +29,9 @@
 
 # * RFM: Make layout#count so it handles empty query (should do :all instead of :find), just like here in the dm adapter.
 #		Or should it do  '-view' when there are no criteria?
+
+
+# Property & field names in dm-filemaker-adapter models must be declared lowercase, regardless of what they are in FMP.
 
 
 module DataMapper

@@ -1,6 +1,7 @@
-# Dm::Filemaker::Adapter
+# dm-filemaker-adapter
 
-TODO: Write a gem description
+This datastore adapter for DataMapper provides all of DataMapper's basic CRUD operations
+using Filemaker as the datastore.
 
 ## Installation
 
@@ -20,7 +21,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You must also install the Filemaker-to-ruby gem 'ginjo-rfm .
+dm-filemaker-adapter uses rfm to handle the underlying calls to Filemaker server and the parsing of the xml responses.
+
+So, a simple yet functional Gemfile would look something like this.
+		gem 'data_mapper'
+		gem 'dm-filemaker-adapter'
+		gem 'ginjo-rfm'
+		
+Ginjo-rfm will use the built-in ruby xml parser, REXML, unless you install one of the other supported parsers.
+		gem 'data_mapper'
+		gem 'dm-filemaker-adapter'
+		gem 'ginjo-rfm'
+		
+		gem 'ox'  # or 'nokogiri' or 'libxml-ruby'
+
+
 
 ## Contributing
 
