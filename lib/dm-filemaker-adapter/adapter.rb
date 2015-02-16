@@ -1,63 +1,63 @@
 # Property & field names in dm-filemaker-adapter models must be declared lowercase, regardless of what they are in FMP.
 
 module DataMapper
-	[Resource, Model, Adapters]
-	
-	# All this to tack on class and instance methods to the model/resource.
-	module Resource
-	  class << self
-	  	alias_method :included_orig, :included
-	  	def included(klass)
-	  		included_orig(klass)
-	  		if klass.repository.adapter.to_s[/filemaker/i]
-	  			klass.instance_eval do
-	  				extend repository.adapter.class::ModelMethods
-		  			include repository.adapter.class::ResourceMethods
-	  			end
-	  		end
-	  	end
-	  end
-	end
-	
-	module Model
-		#attr_accessor :last_query
-		alias_method :finalize_orig, :finalize
-		def finalize(*args)
-			property :record_id, Integer, :lazy=>false
-			property :mod_id, Integer, :lazy=>false
-			finalize_orig
-		end
-	end
+  [Resource, Model, Adapters]
+  
+  # All this to tack on class and instance methods to the model/resource.
+  module Resource
+    class << self
+      alias_method :included_orig, :included
+      def included(klass)
+        included_orig(klass)
+        if klass.repository.adapter.to_s[/filemaker/i]
+          klass.instance_eval do
+            extend repository.adapter.class::ModelMethods
+            include repository.adapter.class::ResourceMethods
+          end
+        end
+      end
+    end
+  end
+  
+  module Model
+    #attr_accessor :last_query
+    alias_method :finalize_orig, :finalize
+    def finalize(*args)
+      property :record_id, Integer, :lazy=>false
+      property :mod_id, Integer, :lazy=>false
+      finalize_orig
+    end
+  end
 
 
 
   module Adapters
   
     class FilemakerAdapter < AbstractAdapter
-    	@fmresultset_template_path = File.expand_path('../dm-fmresultset.yml', __FILE__).to_s
-    	class << self; attr_accessor :fmresultset_template_path; end
-    	VERSION = DataMapper::FilemakerAdapter::VERSION
+      @fmresultset_template_path = File.expand_path('../dm-fmresultset.yml', __FILE__).to_s
+      class << self; attr_accessor :fmresultset_template_path; end
+      VERSION = DataMapper::FilemakerAdapter::VERSION
     
     
-			###  UTILITY METHODS  ###
+      ###  UTILITY METHODS  ###
     
-    	# Class methods extended onto model.
-    	module ModelMethods
-	  		def layout
-	        Rfm.layout(storage_name, repository.adapter.options.symbolize_keys)
-	      end
+      # Class methods extended onto model.
+      module ModelMethods
+        def layout
+          Rfm.layout(storage_name, repository.adapter.options.symbolize_keys)
+        end
       end
-    	
-    	# Instance methods included in model.
-    	module ResourceMethods
-    		def layout
-    			model.layout
-    		end
-    	end
+      
+      # Instance methods included in model.
+      module ResourceMethods
+        def layout
+          model.layout
+        end
+      end
   
 
 
-			###  ADAPTER CORE METHODS  ###
+      ###  ADAPTER CORE METHODS  ###
 
       # Persists one or many new resources
       #
@@ -74,15 +74,15 @@ module DataMapper
       #
       # @api semipublic
       def create(resources)
-      	#resources[0].model.last_query = resources
-				counter = 0
-				resources.each do |resource|
-					fm_params = fmp_attributes resource.dirty_attributes
-					rslt = layout(resource.model).create(fm_params, :template=>self.class.fmresultset_template_path)
-					merge_fmp_response(resource, rslt[0])
-					counter +=1
-				end
-				counter
+        #resources[0].model.last_query = resources
+        counter = 0
+        resources.each do |resource|
+          fm_params = fmp_attributes resource.dirty_attributes
+          rslt = layout(resource.model).create(fm_params, :template=>self.class.fmresultset_template_path)
+          merge_fmp_response(resource, rslt[0])
+          counter +=1
+        end
+        counter
       end
 
       # Reads one or many resources from a datastore
@@ -99,34 +99,34 @@ module DataMapper
       #   an array of hashes to become resources
       #
       # @api semipublic
-			# def read(query)
-			#   raise NotImplementedError, "#{self.class}#read not implemented"
-			# end
-			#
-			def read(query)
-				#query.model.last_query = query
-				#y query
-				_layout = layout(query.model)
-				opts = fmp_options(query)
-				opts[:template] = self.class.fmresultset_template_path
-				prms = fmp_query(query.conditions) #.to_set.first)
-				rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
-				rslt.dup.each_with_index(){|r, i| rslt[i] = r.to_h}
-				rslt
-			end
-			
-			# Takes a query and returns number of matched records.
-			# An empty query will return the total record count
-			def aggregate(query)
-				#query.model.last_query = query
-				#y query
-				_layout = layout(query.model)
-				opts = fmp_options(query)
-				opts[:template] = self.class.fmresultset_template_path
-				prms = fmp_query(query.conditions) #.to_set.first)
-				#[prms.empty? ? _layout.all(:max_records=>0).foundset_count : _layout.count(prms)]
-				[prms.empty? ? _layout.view.total_count : _layout.count(prms)]
-			end
+      # def read(query)
+      #   raise NotImplementedError, "#{self.class}#read not implemented"
+      # end
+      #
+      def read(query)
+        #query.model.last_query = query
+        #y query
+        _layout = layout(query.model)
+        opts = fmp_options(query)
+        opts[:template] = self.class.fmresultset_template_path
+        prms = fmp_query(query.conditions) #.to_set.first)
+        rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
+        rslt.dup.each_with_index(){|r, i| rslt[i] = r.to_h}
+        rslt
+      end
+      
+      # Takes a query and returns number of matched records.
+      # An empty query will return the total record count
+      def aggregate(query)
+        #query.model.last_query = query
+        #y query
+        _layout = layout(query.model)
+        opts = fmp_options(query)
+        opts[:template] = self.class.fmresultset_template_path
+        prms = fmp_query(query.conditions) #.to_set.first)
+        #[prms.empty? ? _layout.all(:max_records=>0).foundset_count : _layout.count(prms)]
+        [prms.empty? ? _layout.view.total_count : _layout.count(prms)]
+      end
 
       # Updates one or many existing resources
       #
@@ -145,16 +145,16 @@ module DataMapper
       #
       # @api semipublic
       def update(attributes, collection)
-      	#collection[0].model.last_query = [attributes, collection]
-      	fm_params = fmp_attributes(attributes)
-				counter = 0
-				collection.each do |resource|
-					rslt = layout(resource.model).edit(resource.record_id, fm_params, :template=>self.class.fmresultset_template_path)
-					merge_fmp_response(resource, rslt[0])
-					resource.persistence_state = DataMapper::Resource::PersistenceState::Clean.new resource
-					counter +=1
-				end
-				counter        
+        #collection[0].model.last_query = [attributes, collection]
+        fm_params = fmp_attributes(attributes)
+        counter = 0
+        collection.each do |resource|
+          rslt = layout(resource.model).edit(resource.record_id, fm_params, :template=>self.class.fmresultset_template_path)
+          merge_fmp_response(resource, rslt[0])
+          resource.persistence_state = DataMapper::Resource::PersistenceState::Clean.new resource
+          counter +=1
+        end
+        counter        
       end
 
       # Deletes one or many existing resources
@@ -172,149 +172,149 @@ module DataMapper
       #
       # @api semipublic
       def delete(collection)
- 				counter = 0
-				collection.each do |resource|
-					rslt = layout(resource.model).delete(resource.record_id, :template=>self.class.fmresultset_template_path)
-					counter +=1
-				end
-				counter
+        counter = 0
+        collection.each do |resource|
+          rslt = layout(resource.model).delete(resource.record_id, :template=>self.class.fmresultset_template_path)
+          counter +=1
+        end
+        counter
       end
       
 
 
-			###  ADAPTER HELPER METHODS  ###
+      ###  ADAPTER HELPER METHODS  ###
 
-			# Create fmp layout object from model object.
-			def layout(model)
-				#Rfm.layout(model.storage_name, options.symbolize_keys)   #query.repository.adapter.options.symbolize_keys)
-				model.layout
-			end
-			
-			# Convert dm query object to fmp query params (hash)
-			def fmp_query(input)
-				#puts "CONDITIONS input #{input.class.name} (#{input})"
-				if input.class.name[/OrOperation/]
-					input.operands.collect {|o| fmp_query o}
-				elsif input.class.name[/AndOperation/]
-					h = Hash.new
-					input.operands.each do |k,v|
-						r = fmp_query(k)
-						#puts "CONDITIONS operand #{r}"
-						if r.is_a?(Hash)
-							h.merge!(r)
-						else
-							h=r
-							break
-						end
-					end
-					h
-				elsif input.class.name[/NullOperation/] || input.nil?
-					{}
-				else
-					#puts "FMP_QUERY OPERATION #{input.class}"
-					val = input.loaded_value
+      # Create fmp layout object from model object.
+      def layout(model)
+        #Rfm.layout(model.storage_name, options.symbolize_keys)   #query.repository.adapter.options.symbolize_keys)
+        model.layout
+      end
+      
+      # Convert dm query object to fmp query params (hash)
+      def fmp_query(input)
+        #puts "CONDITIONS input #{input.class.name} (#{input})"
+        if input.class.name[/OrOperation/]
+          input.operands.collect {|o| fmp_query o}
+        elsif input.class.name[/AndOperation/]
+          h = Hash.new
+          input.operands.each do |k,v|
+            r = fmp_query(k)
+            #puts "CONDITIONS operand #{r}"
+            if r.is_a?(Hash)
+              h.merge!(r)
+            else
+              h=r
+              break
+            end
+          end
+          h
+        elsif input.class.name[/NullOperation/] || input.nil?
+          {}
+        else
+          #puts "FMP_QUERY OPERATION #{input.class}"
+          val = input.loaded_value
 
-					if val.to_s != ''
-					
-						operation = input.class.name
-						operator = case
-						when operation[/EqualTo/]; '='
-						when operation[/GreaterThan/]; '>'
-						when operation[/LessThan/]; '<'
-						when operation[/Like/]; ''
-						when operation[/Null/]; ''
-						else ''
-						end
-					
-						val = val._to_fm if val.respond_to? :_to_fm
-						{input.subject.field.to_s => "#{operator}#{val}"}
-					else
-						{}
-					end
-				end
-			end
-			
-			
-			# Convert dm attributes hash to regular hash
-			# TODO: Should the result be string or symbol keys?
-			def fmp_attributes(attributes)
-				#puts "ATTRIBUTES"
-				y attributes
-				fm_params = Hash.new
-				attributes.to_h.each do |k,v|
-					fm_params[k.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-				end
-				# fm_params = Hash.new
-				# resource.dirty_attributes.each do |a,v|
-				# 	fm_params[a.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-				# end
-				fm_params
-			end
-			
-			# Get fmp options hash from query
-			def fmp_options(query)
-				fm_options = {}
-				fm_options[:skip_records] = query.offset if query.offset
-				fm_options[:max_records] = query.limit if query.limit
-				if query.order
-					fm_options[:sort_field] = query.order.collect do |ord|
-						ord.target.field
-					end
-					fm_options[:sort_order] = query.order.collect do |ord|
-						ord.operator.to_s + 'end'
-					end
-				end
-				fm_options
-			end
-						
-			def merge_fmp_response(resource, record)
-				resource.model.properties.to_a.each do |property|
-					if record.key?(property.field.to_s)
-						resource[property.name] = record[property.field.to_s]
-					end
-				end			
-			end
-			
-			# # This is supposed to convert property objects to field name. Not sure if it works.
-			# def get_field_name(field)
-			# 	return field.field if field.respond_to? :field
-			# 	field
-			# end
-			      
+          if val.to_s != ''
+          
+            operation = input.class.name
+            operator = case
+            when operation[/EqualTo/]; '='
+            when operation[/GreaterThan/]; '>'
+            when operation[/LessThan/]; '<'
+            when operation[/Like/]; ''
+            when operation[/Null/]; ''
+            else ''
+            end
+          
+            val = val._to_fm if val.respond_to? :_to_fm
+            {input.subject.field.to_s => "#{operator}#{val}"}
+          else
+            {}
+          end
+        end
+      end
+      
+      
+      # Convert dm attributes hash to regular hash
+      # TODO: Should the result be string or symbol keys?
+      def fmp_attributes(attributes)
+        #puts "ATTRIBUTES"
+        y attributes
+        fm_params = Hash.new
+        attributes.to_h.each do |k,v|
+          fm_params[k.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
+        end
+        # fm_params = Hash.new
+        # resource.dirty_attributes.each do |a,v|
+        #   fm_params[a.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
+        # end
+        fm_params
+      end
+      
+      # Get fmp options hash from query
+      def fmp_options(query)
+        fm_options = {}
+        fm_options[:skip_records] = query.offset if query.offset
+        fm_options[:max_records] = query.limit if query.limit
+        if query.order
+          fm_options[:sort_field] = query.order.collect do |ord|
+            ord.target.field
+          end
+          fm_options[:sort_order] = query.order.collect do |ord|
+            ord.operator.to_s + 'end'
+          end
+        end
+        fm_options
+      end
+            
+      def merge_fmp_response(resource, record)
+        resource.model.properties.to_a.each do |property|
+          if record.key?(property.field.to_s)
+            resource[property.name] = record[property.field.to_s]
+          end
+        end     
+      end
+      
+      # # This is supposed to convert property objects to field name. Not sure if it works.
+      # def get_field_name(field)
+      #   return field.field if field.respond_to? :field
+      #   field
+      # end
+            
 
-			protected :fmp_query, :fmp_attributes, :fmp_options, :merge_fmp_response
+      protected :fmp_query, :fmp_attributes, :fmp_options, :merge_fmp_response
 
-		end # FilemakerAdapter
+    end # FilemakerAdapter
   end # Adapters
 end # DataMapper
 
 class Time
-	def _to_fm
-		d = strftime('%m/%d/%Y') unless Date.today == Date.parse(self.to_s)
-		t = strftime('%T')
-		d ? "#{d} #{t}" : t
-	end
+  def _to_fm
+    d = strftime('%m/%d/%Y') unless Date.today == Date.parse(self.to_s)
+    t = strftime('%T')
+    d ? "#{d} #{t}" : t
+  end
 end # Time
 
 class DateTime
-	def _to_fm
-		d = strftime('%m/%d/%Y')
-		t =strftime('%T')
-		"#{d} #{t}"
-	end
+  def _to_fm
+    d = strftime('%m/%d/%Y')
+    t =strftime('%T')
+    "#{d} #{t}"
+  end
 end # Time
 
 class Timestamp
-	def _to_fm
-		d = strftime('%m/%d/%Y')
-		t =strftime('%T')
-		"#{d} #{t}"
-	end
+  def _to_fm
+    d = strftime('%m/%d/%Y')
+    t =strftime('%T')
+    "#{d} #{t}"
+  end
 end # Time
 
 class Date
-	def _to_fm
-		strftime('%m/%d/%Y')
-	end
+  def _to_fm
+    strftime('%m/%d/%Y')
+  end
 end # Time
 
