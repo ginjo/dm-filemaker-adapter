@@ -65,7 +65,10 @@ module DataMapper
 		end
 	end
 
+
+
   module Adapters
+  
     class FilemakerAdapter < AbstractAdapter
     	@fmresultset_template_path = File.expand_path('../dm-fmresultset.yml', __FILE__).to_s
     	class << self; attr_accessor :fmresultset_template_path; end
@@ -89,107 +92,8 @@ module DataMapper
     	end
   
 
-			###  ADPTER METHODS  ###
 
-			# Create fmp layout object from model object.
-			def layout(model)
-				#Rfm.layout(model.storage_name, options.symbolize_keys)   #query.repository.adapter.options.symbolize_keys)
-				model.layout
-			end
-			
-			# Convert dm query object to fmp query params (hash)
-			def fmp_query(input)
-				#puts "CONDITIONS input #{input.class.name} (#{input})"
-				if input.class.name[/OrOperation/]
-					input.operands.collect {|o| fmp_query o}
-				elsif input.class.name[/AndOperation/]
-					h = Hash.new
-					input.operands.each do |k,v|
-						r = fmp_query(k)
-						#puts "CONDITIONS operand #{r}"
-						if r.is_a?(Hash)
-							h.merge!(r)
-						else
-							h=r
-							break
-						end
-					end
-					h
-				elsif input.class.name[/NullOperation/] || input.nil?
-					{}
-				else
-					#puts "FMP_QUERY OPERATION #{input.class}"
-					val = input.loaded_value
-
-					if val.to_s != ''
-					
-						operation = input.class.name
-						operator = case
-						when operation[/EqualTo/]; '='
-						when operation[/GreaterThan/]; '>'
-						when operation[/LessThan/]; '<'
-						when operation[/Like/]; ''
-						when operation[/Null/]; ''
-						else ''
-						end
-					
-						val = val._to_fm if val.respond_to? :_to_fm
-						{input.subject.field.to_s => "#{operator}#{val}"}
-					else
-						{}
-					end
-				end
-			end
-			
-			
-			# Convert dm attributes hash to regular hash
-			# TODO: Should the result be string or symbol keys?
-			def fmp_attributes(attributes)
-				#puts "ATTRIBUTES"
-				y attributes
-				fm_params = Hash.new
-				attributes.to_h.each do |k,v|
-					fm_params[k.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-				end
-				# fm_params = Hash.new
-				# resource.dirty_attributes.each do |a,v|
-				# 	fm_params[a.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-				# end
-				fm_params
-			end
-			
-			# Get fmp options hash from query
-			def fmp_options(query)
-				fm_options = {}
-				fm_options[:skip_records] = query.offset if query.offset
-				fm_options[:max_records] = query.limit if query.limit
-				if query.order
-					fm_options[:sort_field] = query.order.collect do |ord|
-						ord.target.field
-					end
-					fm_options[:sort_order] = query.order.collect do |ord|
-						ord.operator.to_s + 'end'
-					end
-				end
-				fm_options
-			end
-			
-			# This is supposed to convert property objects to field name. Not sure if it works.
-			def get_field_name(field)
-				return field.field if field.respond_to? :field
-				field
-			end
-			
-			def merge_fmp_response(resource, record)
-				resource.model.properties.to_a.each do |property|
-					if record.key?(property.field.to_s)
-						resource[property.name] = record[property.field.to_s]
-					end
-				end			
-			end
-
-
-			###  CORE ADAPTER METHODS  ###
+			###  ADAPTER CORE METHODS  ###
 
       # Persists one or many new resources
       #
@@ -312,7 +216,107 @@ module DataMapper
 				counter
       end
       
-      
+
+
+			###  ADAPTER HELPER METHODS  ###
+
+			# Create fmp layout object from model object.
+			def layout(model)
+				#Rfm.layout(model.storage_name, options.symbolize_keys)   #query.repository.adapter.options.symbolize_keys)
+				model.layout
+			end
+			
+			# Convert dm query object to fmp query params (hash)
+			def fmp_query(input)
+				#puts "CONDITIONS input #{input.class.name} (#{input})"
+				if input.class.name[/OrOperation/]
+					input.operands.collect {|o| fmp_query o}
+				elsif input.class.name[/AndOperation/]
+					h = Hash.new
+					input.operands.each do |k,v|
+						r = fmp_query(k)
+						#puts "CONDITIONS operand #{r}"
+						if r.is_a?(Hash)
+							h.merge!(r)
+						else
+							h=r
+							break
+						end
+					end
+					h
+				elsif input.class.name[/NullOperation/] || input.nil?
+					{}
+				else
+					#puts "FMP_QUERY OPERATION #{input.class}"
+					val = input.loaded_value
+
+					if val.to_s != ''
+					
+						operation = input.class.name
+						operator = case
+						when operation[/EqualTo/]; '='
+						when operation[/GreaterThan/]; '>'
+						when operation[/LessThan/]; '<'
+						when operation[/Like/]; ''
+						when operation[/Null/]; ''
+						else ''
+						end
+					
+						val = val._to_fm if val.respond_to? :_to_fm
+						{input.subject.field.to_s => "#{operator}#{val}"}
+					else
+						{}
+					end
+				end
+			end
+			
+			
+			# Convert dm attributes hash to regular hash
+			# TODO: Should the result be string or symbol keys?
+			def fmp_attributes(attributes)
+				#puts "ATTRIBUTES"
+				y attributes
+				fm_params = Hash.new
+				attributes.to_h.each do |k,v|
+					fm_params[k.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
+				end
+				# fm_params = Hash.new
+				# resource.dirty_attributes.each do |a,v|
+				# 	fm_params[a.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
+				# end
+				fm_params
+			end
+			
+			# Get fmp options hash from query
+			def fmp_options(query)
+				fm_options = {}
+				fm_options[:skip_records] = query.offset if query.offset
+				fm_options[:max_records] = query.limit if query.limit
+				if query.order
+					fm_options[:sort_field] = query.order.collect do |ord|
+						ord.target.field
+					end
+					fm_options[:sort_order] = query.order.collect do |ord|
+						ord.operator.to_s + 'end'
+					end
+				end
+				fm_options
+			end
+						
+			def merge_fmp_response(resource, record)
+				resource.model.properties.to_a.each do |property|
+					if record.key?(property.field.to_s)
+						resource[property.name] = record[property.field.to_s]
+					end
+				end			
+			end
+			
+			# # This is supposed to convert property objects to field name. Not sure if it works.
+			# def get_field_name(field)
+			# 	return field.field if field.respond_to? :field
+			# 	field
+			# end
+			      
 
 			protected :fmp_query, :fmp_attributes, :fmp_options, :merge_fmp_response
 

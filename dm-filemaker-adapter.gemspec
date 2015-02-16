@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = DataMapper::FilemakerAdapter::VERSION
   spec.authors       = ["wbr"]
   spec.email         = ["wbr@mac.com"]
-  spec.summary       = %q{DataMapper adapter for Filemaker}
+  spec.summary       = %q{Filemaker adapter for DataMapper}
   spec.description   = %q{Use Filemaker Server as a datastore for DataMapper ORM}
   spec.homepage      = ""
   spec.license       = "MIT"
