@@ -20,7 +20,7 @@ module DataMapper
   end
   
   module Model
-    #attr_accessor :last_query
+    attr_accessor :last_query
     alias_method :finalize_orig, :finalize
     def finalize(*args)
       property :record_id, Integer, :lazy=>false
@@ -77,7 +77,7 @@ module DataMapper
         #resources[0].model.last_query = resources
         counter = 0
         resources.each do |resource|
-          fm_params = attributes_as_fields(resource.dirty_attributes)
+          fm_params = prepare_fmp_attributes(resource.dirty_attributes)
           rslt = layout(resource.model).create(fm_params, :template=>self.class.fmresultset_template_path)
           merge_fmp_response(resource, rslt[0])
           counter +=1
@@ -104,7 +104,7 @@ module DataMapper
       # end
       #
       def read(query)
-        #query.model.last_query = query
+        query.model.last_query = query
         #y query
         _layout = layout(query.model)
         opts = fmp_options(query)
@@ -146,7 +146,7 @@ module DataMapper
       # @api semipublic
       def update(attributes, collection)
         #collection[0].model.last_query = [attributes, collection]
-        fm_params = attributes_as_fields(attributes)
+        fm_params = prepare_fmp_attributes(attributes)
         counter = 0
         collection.each do |resource|
           rslt = layout(resource.model).edit(resource.record_id, fm_params, :template=>self.class.fmresultset_template_path)
@@ -212,62 +212,88 @@ module DataMapper
           {}
         else
           #puts "FMP_QUERY OPERATION #{input.class}"
-          val = input.loaded_value.dup
-
-          if val.to_s != ''
+          prepare_fmp_attributes({input.subject=>input.value}, :prepend=>fmp_operator(input.class.name))
           
-            operation = input.class.name
-            operator = case
-            when operation[/EqualTo/]; '='
-            when operation[/GreaterThan/]; '>'
-            when operation[/LessThan/]; '<'
-            when operation[/Like/]; ''
-            when operation[/Null/]; ''
-            else ''
-            end
           
-          	#puts "VAL #{val}"
-            val = val._to_fm if val.respond_to? :_to_fm
-            val.kind_of?(Array) ? val.each{|v| v.prepend(operator)} : val.prepend(operator)
-            {input.subject.field.to_s => val}
-          else
-            {}
-          end
+					# val = input.loaded_value.dup
+					# 
+					# if val.to_s != ''
+					# 
+					#   operation = input.class.name
+					#   operator = case
+					#   when operation[/EqualTo/]; '='
+					#   when operation[/GreaterThan/]; '>'
+					#   when operation[/LessThan/]; '<'
+					#   when operation[/Like/]; ''
+					#   when operation[/Null/]; ''
+					#   else ''
+					#   end
+					# 
+					# 	#puts "VAL #{val}"
+					#   val = val._to_fm if val.respond_to? :_to_fm
+					#   val.kind_of?(Array) ? val.each{|v| v.prepend(operator)} : val.prepend(operator)
+					#   {input.subject.field.to_s => val}
+					# else
+					#   {}
+					# end
         end
       end
       
-      def prepare_fm_attributes(attributes, *args)
+      def prepare_fmp_attributes(attributes, *args)
       	options = args.last.is_a?(Hash) ? args.pop : {}
       	prepend, append = options[:prepend], options[:append]
       	fm_attributes = {}
+      	#puts "RAW ATTRIBUTES"
+      	#y attributes
       	attributes_as_fields(attributes).each do |key, val|
-      		new_val = Array(val).inject([]) do |r, v|	
+      		#puts "EACH ATTRIBUTE class #{val.class}"
+      		#puts "EACH ATTRIBUTE value #{val}"
+      		new_val = Array(val.dup).inject([]) do |r, v|
+      			#puts "INJECTING v"
+      			#puts v
       			new_v = v.respond_to?(:_to_fm) ? v._to_fm : v
+      			#puts "PREPENDING #{new_v} with '#{prepend}'"
       			new_v.prepend prepend if prepend
       			new_v.append append if append
       			r << new_v
       		end
+      		#puts "NEW_VAL"
+      		#puts new_val
       		fm_attributes[key] = new_val.size < 2 ? new_val[0] : new_val
       	end
+      	#puts "FM_ATTRIBUTES"
+      	#puts fm_attributes
       	fm_attributes
+      end
+      
+      # Convert operation class to operator string
+      def fmp_operator(operation)
+	      case
+	      when operation[/EqualTo/]; '='
+	      when operation[/GreaterThan/]; '>'
+	      when operation[/LessThan/]; '<'
+	      when operation[/Like/];
+	      when operation[/Null/];
+	      else nil
+	      end
       end
       
       
       # Convert dm attributes hash to regular hash
       # TODO: Should the result be string or symbol keys?
-      def fmp_attributes(attributes)
-        #puts "ATTRIBUTES"
-        y attributes
-        fm_params = Hash.new
-        attributes.to_h.each do |k,v|
-          fm_params[k.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-        end
-        # fm_params = Hash.new
-        # resource.dirty_attributes.each do |a,v|
-        #   fm_params[a.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-        # end
-        fm_params
-      end
+			# def fmp_attributes(attributes)
+			#   #puts "ATTRIBUTES"
+			#   y attributes
+			#   fm_params = Hash.new
+			#   attributes.to_h.each do |k,v|
+			#     fm_params[k.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
+			#   end
+			#   # fm_params = Hash.new
+			#   # resource.dirty_attributes.each do |a,v|
+			#   #   fm_params[a.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
+			#   # end
+			#   fm_params
+			# end
       
       # Get fmp options hash from query
       def fmp_options(query)
@@ -300,7 +326,7 @@ module DataMapper
       # end
             
 
-      protected :fmp_query, :fmp_attributes, :fmp_options, :merge_fmp_response
+      protected :fmp_query, :fmp_options, :merge_fmp_response, :prepare_fmp_attributes, :fmp_operator
 
     end # FilemakerAdapter
   end # Adapters
