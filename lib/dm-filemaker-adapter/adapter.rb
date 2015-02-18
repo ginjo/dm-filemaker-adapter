@@ -77,7 +77,7 @@ module DataMapper
         #resources[0].model.last_query = resources
         counter = 0
         resources.each do |resource|
-          fm_params = fmp_attributes resource.dirty_attributes
+          fm_params = attributes_as_fields(resource.dirty_attributes)
           rslt = layout(resource.model).create(fm_params, :template=>self.class.fmresultset_template_path)
           merge_fmp_response(resource, rslt[0])
           counter +=1
@@ -109,7 +109,7 @@ module DataMapper
         _layout = layout(query.model)
         opts = fmp_options(query)
         opts[:template] = self.class.fmresultset_template_path
-        prms = fmp_query(query.conditions) #.to_set.first)
+        prms = fmp_query(query.conditions)
         rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
         rslt.dup.each_with_index(){|r, i| rslt[i] = r.to_h}
         rslt
@@ -123,7 +123,7 @@ module DataMapper
         _layout = layout(query.model)
         opts = fmp_options(query)
         opts[:template] = self.class.fmresultset_template_path
-        prms = fmp_query(query.conditions) #.to_set.first)
+        prms = fmp_query(query.conditions)
         #[prms.empty? ? _layout.all(:max_records=>0).foundset_count : _layout.count(prms)]
         [prms.empty? ? _layout.view.total_count : _layout.count(prms)]
       end
@@ -146,7 +146,7 @@ module DataMapper
       # @api semipublic
       def update(attributes, collection)
         #collection[0].model.last_query = [attributes, collection]
-        fm_params = fmp_attributes(attributes)
+        fm_params = attributes_as_fields(attributes)
         counter = 0
         collection.each do |resource|
           rslt = layout(resource.model).edit(resource.record_id, fm_params, :template=>self.class.fmresultset_template_path)
@@ -212,7 +212,7 @@ module DataMapper
           {}
         else
           #puts "FMP_QUERY OPERATION #{input.class}"
-          val = input.loaded_value
+          val = input.loaded_value.dup
 
           if val.to_s != ''
           
@@ -226,12 +226,30 @@ module DataMapper
             else ''
             end
           
+          	#puts "VAL #{val}"
             val = val._to_fm if val.respond_to? :_to_fm
-            {input.subject.field.to_s => "#{operator}#{val}"}
+            val.kind_of?(Array) ? val.each{|v| v.prepend(operator)} : val.prepend(operator)
+            {input.subject.field.to_s => val}
           else
             {}
           end
         end
+      end
+      
+      def prepare_fm_attributes(attributes, *args)
+      	options = args.last.is_a?(Hash) ? args.pop : {}
+      	prepend, append = options[:prepend], options[:append]
+      	fm_attributes = {}
+      	attributes_as_fields(attributes).each do |key, val|
+      		new_val = Array(val).inject([]) do |r, v|	
+      			new_v = v.respond_to?(:_to_fm) ? v._to_fm : v
+      			new_v.prepend prepend if prepend
+      			new_v.append append if append
+      			r << new_v
+      		end
+      		fm_attributes[key] = new_val.size < 2 ? new_val[0] : new_val
+      	end
+      	fm_attributes
       end
       
       
