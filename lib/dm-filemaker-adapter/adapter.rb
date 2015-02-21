@@ -74,7 +74,7 @@ module DataMapper
       #
       # @api semipublic
       def create(resources)
-        #resources[0].model.last_query = resources
+        resources[0].model.last_query = resources
         counter = 0
         resources.each do |resource|
           fm_params = prepare_fmp_attributes(resource.dirty_attributes)
@@ -118,7 +118,7 @@ module DataMapper
       # Takes a query and returns number of matched records.
       # An empty query will return the total record count
       def aggregate(query)
-        #query.model.last_query = query
+        query.model.last_query = query
         #y query
         _layout = layout(query.model)
         opts = fmp_options(query)
@@ -145,7 +145,7 @@ module DataMapper
       #
       # @api semipublic
       def update(attributes, collection)
-        #collection[0].model.last_query = [attributes, collection]
+        collection[0].model.last_query = [attributes, collection]
         fm_params = prepare_fmp_attributes(attributes)
         counter = 0
         collection.each do |resource|
@@ -213,29 +213,6 @@ module DataMapper
         else
           #puts "FMP_QUERY OPERATION #{input.class}"
           prepare_fmp_attributes({input.subject=>input.value}, :prepend=>fmp_operator(input.class.name))
-          
-          
-					# val = input.loaded_value.dup
-					# 
-					# if val.to_s != ''
-					# 
-					#   operation = input.class.name
-					#   operator = case
-					#   when operation[/EqualTo/]; '='
-					#   when operation[/GreaterThan/]; '>'
-					#   when operation[/LessThan/]; '<'
-					#   when operation[/Like/]; ''
-					#   when operation[/Null/]; ''
-					#   else ''
-					#   end
-					# 
-					# 	#puts "VAL #{val}"
-					#   val = val._to_fm if val.respond_to? :_to_fm
-					#   val.kind_of?(Array) ? val.each{|v| v.prepend(operator)} : val.prepend(operator)
-					#   {input.subject.field.to_s => val}
-					# else
-					#   {}
-					# end
         end
       end
       
@@ -248,7 +225,7 @@ module DataMapper
       	attributes_as_fields(attributes).each do |key, val|
       		#puts "EACH ATTRIBUTE class #{val.class}"
       		#puts "EACH ATTRIBUTE value #{val}"
-      		new_val = Array(val.dup).inject([]) do |r, v|
+      		new_val = val && [val.dup].flatten.inject([]) do |r, v|
       			#puts "INJECTING v"
       			#puts v
       			new_v = v.respond_to?(:_to_fm) ? v._to_fm : v
@@ -259,7 +236,7 @@ module DataMapper
       		end
       		#puts "NEW_VAL"
       		#puts new_val
-      		fm_attributes[key] = new_val.size < 2 ? new_val[0] : new_val
+      		fm_attributes[key] = (new_val && new_val.size < 2) ? new_val[0] : new_val
       	end
       	#puts "FM_ATTRIBUTES"
       	#puts fm_attributes
@@ -334,7 +311,7 @@ end # DataMapper
 
 class Time
   def _to_fm
-    d = strftime('%m/%d/%Y') unless Date.today == Date.parse(self.to_s)
+    d = strftime('%m/%d/%Y') #unless Date.today == Date.parse(self.to_s)
     t = strftime('%T')
     d ? "#{d} #{t}" : t
   end
