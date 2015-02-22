@@ -46,19 +46,19 @@ Or install it yourself as:
 
     DataMapper.finalize
 
-		# get a specific user id
+    # get a specific user id
     User.get '1035'
 
-		# first record that matches exactly 'wbr'
+    # first record that matches exactly 'wbr'
     User.first :email => 'wbr'
 
-		# all records updated since 3 days ago
+    # all records updated since 3 days ago
     User.all :updated.gt => Time.now-3*24*60*60  #=> greater than 3 days ago
 
-		# records 10 thru 20, ordered by :id
+    # records 10 thru 20, ordered by :id
     User.all(:order=>:id)[10..20]
 
-		# creates 2 find requests in filemaker ('or' operation)
+    # creates 2 find requests in filemaker ('or' operation)
     User.all(:email=>'wbr', :activated_at.gt=>'1/1/1980') | User.all(:username=>'wbr', :activated_at.gt=>'1/1/1980')
     
     

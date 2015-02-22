@@ -8,4 +8,8 @@ describe DataMapper::Adapters::FilemakerAdapter do
   it 'does something useful' do
     expect(true).to eq(true)
   end
+  
+  describe '#create' do
+  	it 'calls rfm layout with appropriate params'
+  end
 end
