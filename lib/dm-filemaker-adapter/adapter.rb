@@ -190,7 +190,7 @@ module DataMapper
         model.layout
       end
       
-      # Convert dm query object to fmp query params (hash)
+      # Convert dm query conditions to fmp query params (hash)
       def fmp_query(input)
         #puts "CONDITIONS input #{input.class.name} (#{input})"
         if input.class.name[/OrOperation/]
@@ -225,13 +225,13 @@ module DataMapper
       	attributes_as_fields(attributes).each do |key, val|
       		#puts "EACH ATTRIBUTE class #{val.class}"
       		#puts "EACH ATTRIBUTE value #{val}"
-      		new_val = val && [val.dup].flatten.inject([]) do |r, v|
+      		new_val = val && [val.is_a?(Fixnum) ? val : val.dup].flatten.inject([]) do |r, v|
       			#puts "INJECTING v"
       			#puts v
       			new_v = v.respond_to?(:_to_fm) ? v._to_fm : v
       			#puts "PREPENDING #{new_v} with '#{prepend}'"
-      			new_v.prepend prepend if prepend
-      			new_v.append append if append
+      			new_v.prepend prepend if prepend rescue nil
+      			new_v.append append if append rescue nil
       			r << new_v
       		end
       		#puts "NEW_VAL"
