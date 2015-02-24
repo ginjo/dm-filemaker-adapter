@@ -1,7 +1,7 @@
 # Property & field names in dm-filemaker-adapter models must be declared lowercase, regardless of what they are in FMP.
 
 module DataMapper
-  [Resource, Model, Adapters]
+  [Adapters, Model, Query, Resource]
   
   # All this to tack on class and instance methods to the model/resource.
   module Resource
@@ -28,6 +28,80 @@ module DataMapper
       finalize_orig
     end
   end
+  
+  class Query
+		# Convert dm query conditions to fmp query params (hash)
+	  def to_fmp_query(input=self.conditions)
+	    #puts "FMP_QUERY input #{input.class.name}"
+	    rslt = if input.class.name[/OrOperation/]
+	    	puts "FMP_QUERY OrOperation #{input.class}"
+	      input.operands.collect do |o|
+	      	r = to_fmp_query o
+	      	"FMP_QUERY or-operation operand #{r}"
+	      	r
+	      end
+	    elsif input.class.name[/AndOperation/]
+	    	puts "FMP_QUERY AndOperation #{input.class}"
+	    	out = {}
+	      input.operands.each do |k,v|
+	        r = to_fmp_query(k).to_hash
+	        puts "FMP_QUERY and-operation operand #{r}"
+	        if r.is_a?(Hash)
+	        	puts "FMP_QUERY and-operation operand is a hash"
+	          out.merge!(r)
+	        else
+	        	puts "FMP_QUERY and-operation operand is NOT a hash"
+	          out = r
+	          break
+	        end
+	      end
+	      out
+	    elsif input.class.name[/NullOperation/] || input.nil?
+	      puts "FMP_QUERY NullOperation #{input.class}"
+	      {}
+	    else
+	      puts "FMP_QUERY else #{input.class}"
+	      puts "FMP_QUERY else-options #{self.options.inspect}"
+	      #prepare_fmp_attributes({input.subject=>input.value}, :prepend=>fmp_operator(input.class.name))
+	      value = (self.options[input.subject.name] ||
+	      	self.options.find{|o,v| o.respond_to?(:target) && o.target.to_s == input.subject.name.to_s}[1] ||
+	      	input.value
+	      ) rescue (puts "ERROR #{$!}"; input.value)
+	      puts "FMP_QUERY else-value #{value}"
+	      repository.adapter.prepare_fmp_attributes({input.subject=>value}, :prepend=>fmp_operator(input.class.name))
+	    end
+	    puts "FMP_QUERY output #{rslt.inspect}"
+	    rslt
+	  end # to_fmp_query
+	  
+		# Convert operation class to operator string
+		def fmp_operator(operation)
+		  case
+		  when operation[/EqualTo/]; '='
+		  when operation[/GreaterThan/]; '>'
+		  when operation[/LessThan/]; '<'
+		  when operation[/Like/];
+		  when operation[/Null/];
+		  else nil
+		  end
+		end
+
+    # Get fmp options hash from query
+    def fmp_options(query=self)
+      fm_options = {}
+      fm_options[:skip_records] = query.offset if query.offset
+      fm_options[:max_records] = query.limit if query.limit
+      if query.order
+        fm_options[:sort_field] = query.order.collect do |ord|
+          ord.target.field
+        end
+        fm_options[:sort_order] = query.order.collect do |ord|
+          ord.operator.to_s + 'end'
+        end
+      end
+      fm_options
+    end	  
+  end # Query
 
 
 
@@ -44,7 +118,7 @@ module DataMapper
       # Class methods extended onto model.
       module ModelMethods
         def layout
-          Rfm.layout(storage_name, repository.adapter.options.symbolize_keys)
+          @layout ||= Rfm.layout(storage_name, repository.adapter.options.symbolize_keys)
         end
       end
       
@@ -107,10 +181,12 @@ module DataMapper
         query.model.last_query = query
         #y query
         _layout = layout(query.model)
-        opts = fmp_options(query)
+        opts = query.fmp_options
+        puts "FMP OPTIONS #{opts.inspect}"
         opts[:template] = self.class.fmresultset_template_path
-        prms = fmp_query(query.conditions)
-        rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
+        prms = query.to_fmp_query
+        puts "ADAPTER#read fmp_query built: #{prms.inspect}"
+        rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts.merge!(:max_records=>10))
         rslt.dup.each_with_index(){|r, i| rslt[i] = r.to_h}
         rslt
       end
@@ -121,7 +197,7 @@ module DataMapper
         query.model.last_query = query
         #y query
         _layout = layout(query.model)
-        opts = fmp_options(query)
+        opts = query.fmp_options
         opts[:template] = self.class.fmresultset_template_path
         prms = fmp_query(query.conditions)
         #[prms.empty? ? _layout.all(:max_records=>0).foundset_count : _layout.count(prms)]
@@ -189,38 +265,12 @@ module DataMapper
         #Rfm.layout(model.storage_name, options.symbolize_keys)   #query.repository.adapter.options.symbolize_keys)
         model.layout
       end
-      
-      # Convert dm query conditions to fmp query params (hash)
-      def fmp_query(input)
-        #puts "CONDITIONS input #{input.class.name} (#{input})"
-        if input.class.name[/OrOperation/]
-          input.operands.collect {|o| fmp_query o}
-        elsif input.class.name[/AndOperation/]
-          h = Hash.new
-          input.operands.each do |k,v|
-            r = fmp_query(k)
-            #puts "CONDITIONS operand #{r}"
-            if r.is_a?(Hash)
-              h.merge!(r)
-            else
-              h=r
-              break
-            end
-          end
-          h
-        elsif input.class.name[/NullOperation/] || input.nil?
-          {}
-        else
-          #puts "FMP_QUERY OPERATION #{input.class}"
-          prepare_fmp_attributes({input.subject=>input.value}, :prepend=>fmp_operator(input.class.name))
-        end
-      end
-      
+
       def prepare_fmp_attributes(attributes, *args)
       	options = args.last.is_a?(Hash) ? args.pop : {}
       	prepend, append = options[:prepend], options[:append]
       	fm_attributes = {}
-      	#puts "RAW ATTRIBUTES"
+      	#puts "PREPARE FMP ATTRIBUTES"
       	#y attributes
       	attributes_as_fields(attributes).each do |key, val|
       		#puts "EACH ATTRIBUTE class #{val.class}"
@@ -229,6 +279,8 @@ module DataMapper
       			#puts "INJECTING v"
       			#puts v
       			new_v = v.respond_to?(:_to_fm) ? v._to_fm : v
+      			#puts "CONVERTING VAL #{new_val} TO STRING"
+      			new_v = new_v.to_s
       			#puts "PREPENDING #{new_v} with '#{prepend}'"
       			new_v.prepend prepend if prepend rescue nil
       			new_v.append append if append rescue nil
@@ -241,51 +293,6 @@ module DataMapper
       	#puts "FM_ATTRIBUTES"
       	#puts fm_attributes
       	fm_attributes
-      end
-      
-      # Convert operation class to operator string
-      def fmp_operator(operation)
-	      case
-	      when operation[/EqualTo/]; '='
-	      when operation[/GreaterThan/]; '>'
-	      when operation[/LessThan/]; '<'
-	      when operation[/Like/];
-	      when operation[/Null/];
-	      else nil
-	      end
-      end
-      
-      
-      # Convert dm attributes hash to regular hash
-      # TODO: Should the result be string or symbol keys?
-			# def fmp_attributes(attributes)
-			#   #puts "ATTRIBUTES"
-			#   y attributes
-			#   fm_params = Hash.new
-			#   attributes.to_h.each do |k,v|
-			#     fm_params[k.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-			#   end
-			#   # fm_params = Hash.new
-			#   # resource.dirty_attributes.each do |a,v|
-			#   #   fm_params[a.field] = v.respond_to?(:_to_fm) ? v._to_fm : v
-			#   # end
-			#   fm_params
-			# end
-      
-      # Get fmp options hash from query
-      def fmp_options(query)
-        fm_options = {}
-        fm_options[:skip_records] = query.offset if query.offset
-        fm_options[:max_records] = query.limit if query.limit
-        if query.order
-          fm_options[:sort_field] = query.order.collect do |ord|
-            ord.target.field
-          end
-          fm_options[:sort_order] = query.order.collect do |ord|
-            ord.operator.to_s + 'end'
-          end
-        end
-        fm_options
       end
             
       def merge_fmp_response(resource, record)
@@ -303,7 +310,7 @@ module DataMapper
       # end
             
 
-      protected :fmp_query, :fmp_options, :merge_fmp_response, :prepare_fmp_attributes, :fmp_operator
+      protected :merge_fmp_response   #,:fmp_options, :prepare_fmp_attributes, :fmp_operator,:fmp_query
 
     end # FilemakerAdapter
   end # Adapters
