@@ -8,6 +8,21 @@ require 'spec_helper'
 # and_call_original breaks block form of expect.
 #
 
+# Shared Example examples:
+# RSpec.shared_examples "#to_fmp_query" do
+# 	it 'Receives dm query conditions and returns fmp query' do
+# 		allow_any_instance_of(Rfm::Layout).to receive(:find).and_return(Rfm::Resultset.allocate)
+# 		expect_any_instance_of(DataMapper::Query).to receive(:to_fmp_query).at_least(:once).and_call_original
+# 		query.inspect
+# 	end
+# end
+#
+# context "with simple .all query" do
+# 	include_examples "#to_fmp_query" do
+# 		let(:query){User.all(:id=>1)}
+# 	end
+# end
+
 describe DataMapper do
 	before :each do
 		DataMapper.setup(:default, 'filemaker://user:pass@hostname.com/DatabaseName')
@@ -51,71 +66,42 @@ describe DataMapper do
 				end.and_return(Rfm::Resultset.allocate)
 				User.all(:id=>1).inspect
 	  	end
-	  end
-	  
-	  
-		# describe '#fmp_query' do
-		# 	before(:each){allow_any_instance_of(Rfm::Layout).to receive(:find).and_return(Rfm::Resultset.allocate)}
-		# 
-		# 	it 'Receives dm query conditions and returns fmp query' do
-		# 		expect(User.repository.adapter).to receive(:fmp_query).at_least(3).times do |conditions|
-		# 			expect(conditions.class.ancestors.include?(DataMapper::Query::Conditions::AbstractOperation)).to eq(true)
-		# 		end.and_call_original
-		# 		puts User.all(:id=>1).inspect
-		# 		puts User.first(:id=>1).inspect
-		# 		puts (User.all(:id=>1) | User.all(:id=>2)).inspect
-		# 	end
-		# 
-		# end
-	  
+	  end  
 	  
 	end # datamapper-adapters-filemaker
 	
 	describe DataMapper::Query do
-
-		# RSpec.shared_examples "#to_fmp_query" do
-		# 	it 'Receives dm query conditions and returns fmp query' do
-		# 		allow_any_instance_of(Rfm::Layout).to receive(:find).and_return(Rfm::Resultset.allocate)
-		# 		expect_any_instance_of(DataMapper::Query).to receive(:to_fmp_query).at_least(:once).and_call_original
-		# 		query.inspect
-		# 	end
-		# end
-
 	  
 	  describe '#to_fmp_query' do
 	  	before(:each) do
 				allow_any_instance_of(Rfm::Layout).to receive(:find).and_return(Rfm::Resultset.allocate)
 				#expect_any_instance_of(DataMapper::Query).to receive(:to_fmp_query).at_least(:once).and_call_original
-			end
-			
-			it 'returns bla bla with a simple .all query' do
-				User.all(:id=>1).inspect
-			end
-			
-			it 'this is the right spec to use - it will allow testing query object & return value' do
-				expect(User.repository.adapter).to receive(:read) do |query|
-					puts "QUERY #{query}"
-					expect(query.to_fmp_query.class).to eq(Hash)
+				
+				expect(DataMapper.repository.adapter).to receive(:read) do |query|
+					#puts "QUERY #{query}"
+					#puts "Self within before/expect block #{self}"
+					@query = query
 					[]
 				end
-				User.all(:id=>1).inspect
 			end
-	  
-			# it 'Receives dm query conditions and returns fmp query' do
-			# 	expect_any_instance_of(DataMapper::Query).to receive(:to_fmp_query).at_least(:once) do |conditions|
-			#			# This won't get called here, if you have the and_call_original. I've tried every which way to get it to work.
-			# 		expect(conditions.class.ancestors.include?(DataMapper::Query::Conditions::AbstractOperation)).to eq(true)
-			# 	end.and_call_original
-			# 	User.all(:id=>1).inspect
-			# 	#User.first(:id=>1).inspect
-			# 	#(User.all(:id=>1) | User.all(:id=>2)).inspect
-			# end
 			
-			# context "with simple .all query" do
-			# 	include_examples "#to_fmp_query" do
-			# 		let(:query){User.all(:id=>1)}
-			# 	end
-			# end
+			it 'simple .all query' do
+				User.all(:id=>1).inspect
+				#puts "Self within example block #{self}"
+				expect(@query.to_fmp_query.class).to eq(Hash)
+			end
+
+			it 'simple .first query' do
+				User.first(:id=>1).inspect
+				#puts "Self within example block #{self}"
+				expect(@query.to_fmp_query.class).to eq(Hash)
+			end
+			
+			it 'compound .all query' do
+				(User.all(:id=>1) | User.all(:id=>2)).inspect
+				#puts "Self within example block #{self}"
+				expect(@query.to_fmp_query.class).to eq(Array)
+			end
 
 	
 	  end	#to_fmp_query
