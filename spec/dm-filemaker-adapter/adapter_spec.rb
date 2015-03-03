@@ -29,6 +29,7 @@ describe DataMapper do
 		class ::User
 			include DataMapper::Resource
 			property :id, Serial
+			property :email, String
 			finalize
 		end
 	end
@@ -73,35 +74,43 @@ describe DataMapper do
 	describe DataMapper::Query do
 	  
 	  describe '#to_fmp_query' do
-	  	before(:each) do
+	  	# I'm passing in the example here, so we can use the metadata to construct
+	  	# streamlined tests for a variety of query inputs to the to_fmp_query method.
+	  	before(:each) do |example|
+	  		
+	  		# Not really needed yet, but helpful if calls go into Rfm.
 				allow_any_instance_of(Rfm::Layout).to receive(:find).and_return(Rfm::Resultset.allocate)
 				#expect_any_instance_of(DataMapper::Query).to receive(:to_fmp_query).at_least(:once).and_call_original
 				
+				# Capture the query object passed to the adapter#read method
 				expect(DataMapper.repository.adapter).to receive(:read) do |query|
 					#puts "QUERY #{query}"
 					#puts "Self within before/expect block #{self}"
 					@query = query
 					[]
 				end
+				
+				# Possible helpful meta info for each example.
+				#puts "EXAMPLE INSTANCE VARS #{example.instance_variables.inspect}"
+				#
+				# Uses the desription of the example as the user query code,
+				# and uses the block of the example as the expected to_fmp_query result.
+				# Also replaces the description with more informative info, including the expected result.
+				#
+				@name = example.description.dup
+				@block = example.instance_variable_get(:@example_block)
+				@expected_result = @block.call
+				example.description.replace "#{@name} should return #{@expected_result}"
+				# Runs the query to get the query object.
+				eval(@name.to_s).inspect
+				@fmp_query = @query.to_fmp_query
+				# All of the above, so we can do this.
+				expect(@fmp_query).to eq(@expected_result)
 			end
 			
-			it 'simple .all query' do
-				User.all(:id=>1).inspect
-				#puts "Self within example block #{self}"
-				expect(@query.to_fmp_query.class).to eq(Hash)
-			end
-
-			it 'simple .first query' do
-				User.first(:id=>1).inspect
-				#puts "Self within example block #{self}"
-				expect(@query.to_fmp_query.class).to eq(Hash)
-			end
-			
-			it 'compound .all query' do
-				(User.all(:id=>1) | User.all(:id=>2)).inspect
-				#puts "Self within example block #{self}"
-				expect(@query.to_fmp_query.class).to eq(Array)
-			end
+			it('User.all'){ {} }
+			it('User.first(:id=>1)') { {'id' => '==1'} }
+			it('(User.all(:id=>1) | User.all(:id=>2))') { [{"id"=>"==1"}, {"id"=>"==2"}] }
 
 	
 	  end	#to_fmp_query
