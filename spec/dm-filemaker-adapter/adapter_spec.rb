@@ -30,8 +30,19 @@ describe DataMapper do
 			include DataMapper::Resource
 			property :id, Serial
 			property :email, String
-			finalize
+			property :username, String
+			property :activated_at, DateTime
+			
+			has n, :orders
 		end
+		class ::Order
+			include DataMapper::Resource
+			property :id, Serial
+			property :total, Decimal
+			
+			belongs_to :user
+		end
+		DataMapper.finalize
 	end
 
 	describe DataMapper::Adapters::FilemakerAdapter do
@@ -87,6 +98,9 @@ describe DataMapper do
 					#puts "QUERY #{query}"
 					#puts "Self within before/expect block #{self}"
 					@query = query
+					#puts @query.conditions.to_yaml
+					# TODO: See rspec mocks docs for how to pass control to the original method and get a result back right here.
+					# hint - it does something like this: @original_method = adapter.method(:to_fmp_query); @original_method.call(query)
 					[]
 				end
 				
@@ -110,9 +124,27 @@ describe DataMapper do
 			
 			it('User.all'){ {} }
 			it('User.first(:id=>1)') { {'id' => '==1'} }
+			it('User.first(:activated_at.lt=>"1/1/2015 00:00:00")') { {"activated_at"=>"<1/1/2015 00:00:00"} }
 			it('(User.all(:id=>1) | User.all(:id=>2))') { [{"id"=>"==1"}, {"id"=>"==2"}] }
-
-	
+			it('(User.all(:id=>1) & User.all(:email=>"some_email"))') { {"id"=>"==1", "email"=>"==some_email"} }
+			it('User.all(:id=>[1, 3, 5, 9])') { {"id"=>["1", "3", "5", "9"]} }
+			it("(User.all(:username=>'uname', :activated_at.gt=>Time.new('1970-01-01 00:00:00')) | User.all(:email.like=>'uname', :activated_at.gt=>Time.new('1970-01-01 00:00:00')))"){
+				[{"username"=>"==uname", "activated_at"=>">01/01/1970 00:00:00"}, {"email"=>"uname", "activated_at"=>">01/01/1970 00:00:00"}]
+			}
+			# TODO: test field-name-translation
+			# TODO: test all other operator possibilities
+			
+			# This tests nested associational query, which dm-filemaker-adapter cannot yet do.
+			#it('User.all(:email=>"something@dot.com", :orders=>{:total.gt=>10.0})') {{}}
+			
+			# This tests a range query using the '&' intersection operator. Two problems with this spec.
+			# 1. Would produce two identical keys in the same hash, if it worked the way we want it to (ruby only allows one).
+			# 2. Filemaker can't search against the same field twice in the same find request, so #1 above wouldn't work anyway.
+			# Ideally, this kind of range request would be turned into a single-field criteria with the appropriate operator separating the two ends of the range data.
+			#	This		:activated_at=>'01/01/2015 00:00:00...03/01/2015 00:00:00' would be dandy.
+			# or this :activate_at=>'>01/01/2015 00:00:00 <03/01/2015 00:00:00'  this actually works in FMP.
+			#it('User.all(:activated_at.gt=>Time.new("2015-01-01 00:00:00")) & User.all(:activated_at.lt=>Time.new("2015-03-01 00:00:00"))') { {"activated_at"=>"<03/01/2015 00:00:00"} }
+	  
 	  end	#to_fmp_query
 	
 	end # datamapper-query
