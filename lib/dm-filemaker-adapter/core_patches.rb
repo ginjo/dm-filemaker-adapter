@@ -70,15 +70,18 @@ module DataMapper
 	      	r
 	      end
 	    elsif input.class.name[/AndOperation/]
-	    	#puts "FMP_QUERY AndOperation #{input.class}"
+	    	#puts "FMP_QUERY AndOperation input class #{input.class}"
+	    	#puts "FMP_QUERY AndOperation input value #{input.inspect}"
 	    	out = {}
 	      input.operands.each do |k,v|
+	      	#puts "FMP_QUERY and-operation pre-process operand key:val #{k}:#{v}"
 	        r = to_fmp_query(k).to_hash
-	        #puts "FMP_QUERY and-operation operand #{r}"
+	        #puts "FMP_QUERY and-operation post-process operand #{r}"
 	        if r.is_a?(Hash)
 	        	#puts "FMP_QUERY and-operation operand is a hash"
-	        	# Filemaker can't have the same field twice in a single find request :(
-	          out.merge!(r) #{|k, oldv, newv| [oldv, newv]}
+	        	# Filemaker can't have the same field twice in a single find request,
+	        	# but we can mash the two conditions together in a way that FMP can use.
+	          out.merge!(r){|k, oldv, newv| "#{oldv} #{newv}"}
 	        else
 	        	#puts "FMP_QUERY and-operation operand is NOT a hash"
 	          out = r
@@ -90,10 +93,13 @@ module DataMapper
 	      #puts "FMP_QUERY NullOperation #{input.class}"
 	      {}
 	    else
-	      #puts "FMP_QUERY else #{input.class}"
+	      #puts "FMP_QUERY else input class #{input.class}"
+	      #puts "FMP_QUERY else input value #{input.inspect}"
 	      #puts "FMP_QUERY else-options #{self.options.inspect}"
 	      #prepare_fmp_attributes({input.subject=>input.value}, :prepend=>fmp_operator(input.class.name))
-	      value = (self.options[input.subject.name] ||
+	      value = (
+	      	self.options[input.keys[0]] ||
+	      	self.options[input.subject.name] ||
 	      	self.options.find{|o,v| o.respond_to?(:target) && o.target.to_s == input.subject.name.to_s}[1] ||
 	      	input.value
 	      ) rescue input.value   #(puts "ERROR #{$!}"; input.value)
@@ -107,9 +113,11 @@ module DataMapper
 		# Convert operation class to operator string
 		def fmp_operator(operation)
 		  case
-		  when operation[/EqualTo/]; '=='
+		  when operation[/GreaterThanOrEqualTo/]; '>='
+		  when operation[/LessThanOrEqualTo/]; '<='
 		  when operation[/GreaterThan/]; '>'
 		  when operation[/LessThan/]; '<'
+		  when operation[/EqualTo/]; '=='
 		  when operation[/Like/];
 		  when operation[/Null/];
 		  else nil

@@ -20,6 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
+    # ruby
+
     DB_CONFIG = {
       adapter:            'filemaker',
       host:               'my.server.com',
@@ -32,7 +34,7 @@ Or install it yourself as:
     
     class User
       include DataMapper::Resource
-      storage_names[:default] = 'user_xml'  # This is your filemaker layout for the user table.
+      storage_names[:default] = 'user_xml'  # This is the name of a filemaker layout representing the table you're modeling.
 
       # Property & field names in this list must be lowercase, regardless of what they are in Filemaker.
 
@@ -46,23 +48,42 @@ Or install it yourself as:
 
     DataMapper.finalize
 
-    # get a specific user id
-    User.get '1035'
 
-    # first record that matches exactly 'wbr'
-    User.first :email => 'wbr'
+
+    # create records
+      User.create(:email => 'abc@company.com', :username => 'abc')
+
+    # get a specific user id
+      User.get '1035'
+
+    # first record that matches exactly 'name'
+      User.first :username => 'name'
 
     # all records updated since 3 days ago
-    User.all :updated.gt => Time.now-3*24*60*60  #=> greater than 3 days ago
+      User.all :updated.gt => Time.now-3*24*60*60
 
-    # records 10 thru 20, ordered by :id
-    User.all(:order=>:id)[10..20]
+    # records 10 thru 20, ordered by :id (the range is resolved by filemaker, before records are returned!)
+      User.all(:order => :id)[10..20]
 
-    # creates 2 find requests in filemaker ('or' operation)
-    User.all(:email=>'wbr', :activated_at.gt=>'1/1/1980') | User.all(:username=>'wbr', :activated_at.gt=>'1/1/1980')
+    # use the union operator to create 2 find requests in a filemaker 'OR' operation
+      User.all(:email => 'abc@company.com', :activated_at.gt => '1/1/1980') | \
+      User.all(:username => 'abc', :activated_at.gt => '1/1/1980')
+
+    # which gets translated to the filemaker query
+      User.find [
+        {:email => 'abc@company.com', :activated_at => '>1/1/1980'},
+        {:username => 'abc', :activated_at.gt => '>1/1/1980'}
+      ]
+
+    # use the intersection operator to combine multiple search criteria in a filemaker 'AND' operation
+      User.all(:email => 'abc@company.com', :activated_at.gt => '1/1/2015') & \
+      User.all(:email => 'abc@company.com', :activated_at.lt => '5/1/2015')
+
+    # you can also write this as
+      User.all(:email => 'abc@company.com', :activated_at.gt => '1/1/2015', :activated_at.lt => '5/1/2015')
     
-    
-    
-    
-    
+    # both of the above get translated to the filemaker query
+      User.find(:email => 'abc@company.com', :activated_at => '>1/1/2015 <5/1/2015')
+
+
 
