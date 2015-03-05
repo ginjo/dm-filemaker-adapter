@@ -78,7 +78,14 @@ describe DataMapper do
 				end.and_return(Rfm::Resultset.allocate)
 				User.all(:id=>1).inspect
 	  	end
-	  end  
+	  end
+	  
+	  describe '#create' do; it 'does something useful'; end
+	  describe '#update' do; it 'does something useful'; end
+	  describe '#delete' do; it 'does something useful'; end
+	  describe '#layout' do; it 'does something useful'; end
+	  describe '#prepare_fmp_attributes' do; it 'does something useful'; end
+	  describe '#merge_fmp_response' do; it 'does something useful'; end
 	  
 	end # datamapper-adapters-filemaker
 	
@@ -166,7 +173,25 @@ describe DataMapper do
 			
 	  
 	  end	#to_fmp_query
+	  
+	  describe '#fmp_operator' do; it 'does something useful'; end
+	  describe '#fmp_options' do; it 'does something useful'; end
 	
 	end # datamapper-query
+	
+	describe DataMapper::Resource do
+		describe '.included' do
+			it 'Calls original #included method'
+			it 'Extends model with ModelMethods'
+			it 'Includes into model ResourceMethods'
+		end
+	end
+	
+	describe DataMapper::Model do
+		describe '#finalize' do
+			it 'Adds properties for :record_id, :mod_id to model'
+			it 'Calls original #finalize method'
+		end
+	end
 	
 end # datamapper

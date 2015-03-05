@@ -149,11 +149,18 @@ module DataMapper
       	options = args.last.is_a?(Hash) ? args.pop : {}
       	prepend, append = options[:prepend], options[:append]
       	fm_attributes = {}
-      	#puts "PREPARE FMP ATTRIBUTES"
+      	puts "PREPARE FMP ATTRIBUTES"
       	#y attributes
+      	
+      	# TODO: Handle attributes that have relationship components (major PITA!)
+      	# q.conditions.operands.to_a[0].subject.parent_key.collect {|p| p.name}
+      	# q.conditions.operands.to_a[0].subject.child_key.collect {|p| p.name}
+      	# q.conditions.operands.to_a[0].loaded_value[child-key-name]
+      	# new_attributes[child-key-name] = parent-key-value
+      	
       	attributes_as_fields(attributes).each do |key, val|
-      		#puts "EACH ATTRIBUTE class #{val.class}"
-      		#puts "EACH ATTRIBUTE value #{val}"
+      		puts "EACH ATTRIBUTE class #{val.class}"
+      		puts "EACH ATTRIBUTE value #{val}"
       		new_val = val && [val.is_a?(Fixnum) ? val : val.dup].flatten.inject([]) do |r, v|
       			#puts "INJECTING v"
       			#puts v
