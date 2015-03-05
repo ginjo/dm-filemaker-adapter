@@ -17,3 +17,4 @@ todo.txt
 .DS_Store
 
 .travis.yml
+*local_testing
