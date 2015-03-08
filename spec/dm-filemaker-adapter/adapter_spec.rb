@@ -80,12 +80,12 @@ describe DataMapper do
 	  	end
 	  end
 	  
-	  describe '#create' do; it 'does something useful'; end
-	  describe '#update' do; it 'does something useful'; end
-	  describe '#delete' do; it 'does something useful'; end
-	  describe '#layout' do; it 'does something useful'; end
-	  describe '#prepare_fmp_attributes' do; it 'does something useful'; end
-	  describe '#merge_fmp_response' do; it 'does something useful'; end
+	  describe '#create' do; it 'does something essential'; end
+	  describe '#update' do; it 'does something essential'; end
+	  describe '#delete' do; it 'does something essential'; end
+	  describe '#layout' do; it 'does something essential'; end
+	  describe '#prepare_fmp_attributes' do; it 'does something essential'; end
+	  describe '#merge_fmp_response' do; it 'does something essential'; end
 	  
 	end # datamapper-adapters-filemaker
 	

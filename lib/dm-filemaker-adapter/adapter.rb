@@ -149,18 +149,36 @@ module DataMapper
       	options = args.last.is_a?(Hash) ? args.pop : {}
       	prepend, append = options[:prepend], options[:append]
       	fm_attributes = {}
-      	puts "PREPARE FMP ATTRIBUTES"
-      	#y attributes
+      	#puts "PREPARE FMP ATTRIBUTES"
+      	#DmProduct.last_query = attributes
+      	#y attributes.operands
+      	
+      	
+      	attributes.dup.each do |key, val|
+      		if key.class.name[/Relationship/]
+      			parent_keys = key.parent_key.to_a   #.collect(){|p| p.name}
+      			child_keys = key.child_key.to_a     #.collect(){|p| p.name}
+      			#puts "RELATIONSHIP PARENT #{key.parent_model_name} #{parent_keys.inspect}"
+      			#puts "RELATIONSHIP CHILD #{key.child_model_name} #{child_keys.inspect}"
+      			#puts "RELATIONSHIP CRITERIA #{val.inspect}"
+      			child_keys.each_with_index do |k, i|
+      				attributes[k] = val[parent_keys[i].name]
+      				attributes.delete key
+      			end
+      		end
+      	end
       	
       	# TODO: Handle attributes that have relationship components (major PITA!)
-      	# q.conditions.operands.to_a[0].subject.parent_key.collect {|p| p.name}
-      	# q.conditions.operands.to_a[0].subject.child_key.collect {|p| p.name}
+      	# q.conditions.operands.to_a[0].subject   .parent_key.collect {|p| p.name}
+      	# q.conditions.operands.to_a[0].subject   .child_key.collect {|p| p.name}
       	# q.conditions.operands.to_a[0].loaded_value[child-key-name]
       	# new_attributes[child-key-name] = parent-key-value
       	
+      	#puts "ATTRIBUTES BEFORE attributes_as_fields"
+      	#y attributes
       	attributes_as_fields(attributes).each do |key, val|
-      		puts "EACH ATTRIBUTE class #{val.class}"
-      		puts "EACH ATTRIBUTE value #{val}"
+      		#puts "EACH ATTRIBUTE class #{val.class.name}"
+      		#puts "EACH ATTRIBUTE value #{val}"
       		new_val = val && [val.is_a?(Fixnum) ? val : val.dup].flatten.inject([]) do |r, v|
       			#puts "INJECTING v"
       			#puts v
@@ -176,10 +194,10 @@ module DataMapper
       		#puts new_val
       		fm_attributes[key] = (new_val && new_val.size < 2) ? new_val[0] : new_val
       	end
-      	#puts "FM_ATTRIBUTES"
+      	#puts "FM_ATTRIBUTES OUTPUT"
       	#puts fm_attributes
       	fm_attributes
-      end
+      end # prepare_fmp_attributes
             
       def merge_fmp_response(resource, record)
         resource.model.properties.to_a.each do |property|
