@@ -78,7 +78,7 @@ module DataMapper
         _layout = layout(query.model)
         opts = query.fmp_options
         opts[:template] = self.class.fmresultset_template_path
-        prms = fmp_query(query.conditions)
+        prms = query.to_fmp_query
         #[prms.empty? ? _layout.all(:max_records=>0).foundset_count : _layout.count(prms)]
         [prms.empty? ? _layout.view.total_count : _layout.count(prms)]
       end
