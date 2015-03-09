@@ -58,7 +58,7 @@ module DataMapper
       #
       def read(query)
         query.model.last_query = query
-        #y query
+        #puts query.to_yaml
         _layout = layout(query.model)
         opts = query.fmp_options
         #puts "FMP OPTIONS #{opts.inspect}"
@@ -66,7 +66,7 @@ module DataMapper
         prms = query.to_fmp_query
         #puts "ADAPTER#read fmp_query built: #{prms.inspect}"
         rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
-        rslt.dup.each_with_index(){|r, i| rslt[i] = r.to_h}
+        rslt.dup.each_with_index(){|r, i| rslt[i] = r.to_hash}
         rslt
       end
       
@@ -149,9 +149,9 @@ module DataMapper
       	options = args.last.is_a?(Hash) ? args.pop : {}
       	prepend, append = options[:prepend], options[:append]
       	fm_attributes = {}
-      	#puts "PREPARE FMP ATTRIBUTES"
       	#DmProduct.last_query = attributes
-      	#y attributes.operands
+      	#puts "PREPARE FMP ATTRIBUTES"
+      	#puts attributes.to_yaml
       	
       	
       	attributes.dup.each do |key, val|
@@ -194,8 +194,8 @@ module DataMapper
       		#puts new_val
       		fm_attributes[key] = (new_val && new_val.size < 2) ? new_val[0] : new_val
       	end
-      	puts "FM_ATTRIBUTES OUTPUT"
-      	puts fm_attributes
+      	#puts "FM_ATTRIBUTES OUTPUT"
+      	#puts fm_attributes
       	fm_attributes
       end # prepare_fmp_attributes
             

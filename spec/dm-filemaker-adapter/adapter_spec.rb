@@ -39,6 +39,7 @@ describe DataMapper do
 			include DataMapper::Resource
 			property :id, Serial
 			property :total, Decimal
+			property :user_id, Integer
 			
 			belongs_to :user
 		end
@@ -49,10 +50,6 @@ describe DataMapper do
 
 	  it 'Has a version number' do
 	    expect(DataMapper::Adapters::FilemakerAdapter::VERSION).not_to be nil
-	  end
-	
-	  it 'Does something useful' do
-	    expect(true).to eq(true)
 	  end
 	  
 	  it 'Supports model classes' do
@@ -99,13 +96,24 @@ describe DataMapper do
 	  	end
 	  	
 	  	it 'Converts dm relationship object to fmp attributes' do
+	  		allow(User.layout).to receive(:find).and_return([{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now}])
+	  		user = User.get(100)
 	  		expect(DataMapper.repository.adapter).to receive(:prepare_fmp_attributes) do |attributes, *args|
-	  			#expect(attributes.keys.first.class).to eq(DataMapper::Property::String)
-	  			#expect(@original_method.call(attributes, *args)).to eq({"email"=>"==abc@def.com"})
-	  			#{"email"=>"==abc@def.com"}
-	  			@original_method.call(attributes, *args)
+	  			expect((attributes.keys.first.class.name)[/Relationship/]).to eq('Relationship')
+	  			expect(attributes.keys.first.parent_key.first.class).to eq(DataMapper::Property::Serial)
+	  			#puts 'RAW ATTRIBUTES'
+	  			#puts attributes.class
+	  			#puts attributes.to_yaml
+	  			original_method_result = @original_method.call(attributes, *args)
+	  			expect(original_method_result).to eq({"user_id"=>"==100"})
+	  			#puts "PROCESSED ATTRIBUTES"
+	  			#puts original_method_result.to_yaml
+	  			original_method_result
 	  		end
-	  		User.all(:orders=>{:total.gt=>10}).inspect
+	  		
+	  		user_orders = user.orders.inspect
+	  		#puts "USER ORDERS INSPECT"
+	  		#puts user_orders
 	  	end
 	  	
 	  	it 'Applies comparison logic to operand value'
