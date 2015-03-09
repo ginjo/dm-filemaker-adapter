@@ -194,8 +194,8 @@ module DataMapper
       		#puts new_val
       		fm_attributes[key] = (new_val && new_val.size < 2) ? new_val[0] : new_val
       	end
-      	#puts "FM_ATTRIBUTES OUTPUT"
-      	#puts fm_attributes
+      	puts "FM_ATTRIBUTES OUTPUT"
+      	puts fm_attributes
       	fm_attributes
       end # prepare_fmp_attributes
             

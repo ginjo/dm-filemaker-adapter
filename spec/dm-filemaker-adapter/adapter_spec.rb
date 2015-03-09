@@ -84,7 +84,33 @@ describe DataMapper do
 	  describe '#update' do; it 'does something essential'; end
 	  describe '#delete' do; it 'does something essential'; end
 	  describe '#layout' do; it 'does something essential'; end
-	  describe '#prepare_fmp_attributes' do; it 'does something essential'; end
+	  
+	  describe '#prepare_fmp_attributes' do
+	  	before(:each) {allow_any_instance_of(Rfm::Layout).to receive(:find).and_return(Rfm::Resultset.allocate)}
+	  	before(:each)	{@original_method = DataMapper.repository.adapter.method(:prepare_fmp_attributes)}  
+	  	
+	  	it 'Converts dm attributes to fmp attributes' do
+	  		expect(DataMapper.repository.adapter).to receive(:prepare_fmp_attributes) do |attributes, *args|
+	  			expect(attributes.keys.first.class).to eq(DataMapper::Property::String)
+	  			expect(@original_method.call(attributes, *args)).to eq({"email"=>"==abc@def.com"})
+	  			{"email"=>"==abc@def.com"}
+	  		end
+	  		User.all(:email=>'abc@def.com').inspect
+	  	end
+	  	
+	  	it 'Converts dm relationship object to fmp attributes' do
+	  		expect(DataMapper.repository.adapter).to receive(:prepare_fmp_attributes) do |attributes, *args|
+	  			#expect(attributes.keys.first.class).to eq(DataMapper::Property::String)
+	  			#expect(@original_method.call(attributes, *args)).to eq({"email"=>"==abc@def.com"})
+	  			#{"email"=>"==abc@def.com"}
+	  			@original_method.call(attributes, *args)
+	  		end
+	  		User.all(:orders=>{:total.gt=>10}).inspect
+	  	end
+	  	
+	  	it 'Applies comparison logic to operand value'
+	  end
+	  
 	  describe '#merge_fmp_response' do; it 'does something essential'; end
 	  
 	end # datamapper-adapters-filemaker
