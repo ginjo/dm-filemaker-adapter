@@ -116,7 +116,16 @@ describe DataMapper do
 	  		#puts user_orders
 	  	end
 	  	
-	  	it 'Applies comparison logic to operand value'
+	  	it 'Applies comparison logic to operand value' do
+	  		expect(DataMapper.repository.adapter).to receive(:prepare_fmp_attributes) do |attributes, *args|
+		  		expect((attributes.keys.first.class.name)[/DateTime/]).to eq('DateTime')
+		  		expect((args.first.values.first)).to eq('>')
+	  			original_method_result = @original_method.call(attributes, *args)
+	  			expect(original_method_result.values.first[0] == '>').to eq(true)
+	  			original_method_result
+	  		end
+	  		User.all(:activated_at.gt=>DateTime.now).inspect
+	  	end
 	  end
 	  
 	  describe '#merge_fmp_response' do; it 'does something essential'; end
