@@ -149,10 +149,8 @@ module DataMapper
       	options = args.last.is_a?(Hash) ? args.pop : {}
       	prepend, append = options[:prepend], options[:append]
       	fm_attributes = {}
-      	#DmProduct.last_query = attributes
       	#puts "PREPARE FMP ATTRIBUTES"
       	#puts attributes.to_yaml
-      	
       	
       	attributes.dup.each do |key, val|
       		if key.class.name[/Relationship/]
