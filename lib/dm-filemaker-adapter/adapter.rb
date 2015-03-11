@@ -66,7 +66,7 @@ module DataMapper
         prms = query.to_fmp_query
         #puts "ADAPTER#read fmp_query built: #{prms.inspect}"
         rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
-        rslt.dup.each_with_index(){|r, i| rslt[i] = r.to_hash}
+        rslt.dup.each_with_index(){|r, i| rslt[i] = Hash.new.merge(r)}
         rslt
       end
       
