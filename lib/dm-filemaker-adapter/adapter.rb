@@ -152,7 +152,17 @@ module DataMapper
       	#puts "PREPARE FMP ATTRIBUTES"
       	#puts attributes.to_yaml
       	
+      	
+      	# Handles attributes that are relationships.
       	attributes.dup.each do |key, val|
+      		# If an attribute is a relationship,
+      		# convert it to a key=>val that can be passed to Rfm.
+      		# Note that DM will eager-load related records of a collection all at once,
+      		# instead of one-at-a-time as you loop thru parent records.
+      		# In this case, the val of a relationship attribute will be a collection of parent records,
+      		# instead of just one parent record.
+      		# Example: "product_type.each {|type| puts type.products.size}"
+      		# Note that this variation will create n+1 queries "product_type.each {|type| puts type.products.count}"
       		if key.class.name[/Relationship/]
       			parent_keys = key.parent_key.to_a   #.collect(){|p| p.name}
       			child_keys = key.child_key.to_a     #.collect(){|p| p.name}
@@ -160,17 +170,12 @@ module DataMapper
       			#puts "RELATIONSHIP CHILD #{key.child_model_name} #{child_keys.inspect}"
       			#puts "RELATIONSHIP CRITERIA #{val.inspect}"
       			child_keys.each_with_index do |k, i|
-      				attributes[k] = val[parent_keys[i].name]
+      				# The value dup is necessary, else the original data of parent resource will be modified.
+      				attributes[k] = Array(val).collect{|v| v[parent_keys[i].name].dup}
       				attributes.delete key
       			end
       		end
       	end
-      	
-      	# TODO: Handle attributes that have relationship components (major PITA!)
-      	# q.conditions.operands.to_a[0].subject   .parent_key.collect {|p| p.name}
-      	# q.conditions.operands.to_a[0].subject   .child_key.collect {|p| p.name}
-      	# q.conditions.operands.to_a[0].loaded_value[child-key-name]
-      	# new_attributes[child-key-name] = parent-key-value
       	
       	#puts "ATTRIBUTES BEFORE attributes_as_fields"
       	#y attributes

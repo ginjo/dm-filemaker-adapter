@@ -75,6 +75,23 @@ describe DataMapper do
 				end.and_return(Rfm::Resultset.allocate)
 				User.all(:id=>1).inspect
 	  	end
+	  	
+			# it 'returns related datasets?' do
+			# 	# allow(User.layout).to receive(:find).and_return({
+			# 	# 	'users'=>[{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now}],
+			# 	# 	'orders'=>[{'user_id'=>100, 'total'=>123, 'id'=>999}]
+			# 	# })
+			# 	allow(User.layout).to receive(:find).and_return([
+			# 		{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now, :@orders=>[{'id'=>999, 'user_id'=>100, 'todal'=>123}] }
+			# 	])
+			# 	user = User.get(100)
+			# 	puts "USER"
+			# 	puts user.inspect
+			# 	puts "USER-ORDERS"
+			# 	puts user.instance_variable_get(:@orders).inspect
+			# 	puts user.instance_variables.inspect
+			# end
+	  	
 	  end
 	  
 	  describe '#create' do; it 'does something essential'; end
