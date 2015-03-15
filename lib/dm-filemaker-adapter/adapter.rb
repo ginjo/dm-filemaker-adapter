@@ -179,7 +179,7 @@ module DataMapper
       			#puts "RELATIONSHIP CRITERIA #{val.inspect}"
       			child_keys.each_with_index do |k, i|
       				# The value dup is necessary, else the original data of parent resource will be modified.
-      				attributes[k] = Array(val).collect{|v| v[parent_keys[i].name].dup}
+      				attributes[k] = Array(val).collect{|v| v[parent_keys[i].name].tap{|x| x.dup rescue x} }
       				attributes.delete key
       			end
       		end

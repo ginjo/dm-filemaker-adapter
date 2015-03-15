@@ -247,17 +247,18 @@ describe DataMapper do
 		end
 	end
 	
-	describe DataMapper::Model do
-		describe '#finalize' do
-			it 'Adds properties for :_record_id, :_mod_id to resource' do
-				allow(User.layout).to receive(:find).and_return([{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now}])
-				user = User.get(100)
-				expect(user._record_id).to eq('something')
-				expect(user._mod_id).to eq('something')
-			end
-			
-			it 'Calls original #finalize method'
-		end
-	end
+	# This is now obsolete. Redo these specs to handle Model#load monkey-patching.
+	# describe DataMapper::Model do
+	# 	describe '#finalize' do
+	# 		it 'Adds properties for :_record_id, :_mod_id to resource' do
+	# 			allow(User.layout).to receive(:find).and_return([{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now}])
+	# 			user = User.get(100)
+	# 			expect(user._record_id).to eq('something')
+	# 			expect(user._mod_id).to eq('something')
+	# 		end
+	# 			
+	# 		it 'Calls original #finalize method'
+	# 	end
+	# end
 	
 end # datamapper
