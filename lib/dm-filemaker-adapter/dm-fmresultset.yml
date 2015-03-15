@@ -59,7 +59,7 @@ elements:
   #attach: [array, 'Rfm::Record', new, object]
   attach: [array, 'Hash', new]
   # This creates a big mess if set to 'private', might be a rfm sax parser issue.
-  attach_attributes: hash
+  attach_attributes: private
   compact: true
   #before_close: '@loaded=true'
   elements:
@@ -76,7 +76,7 @@ elements:
     elements:
     - name: record
       attach: [default, 'Hash', ':allocate']
-      attach_attributes: hash
+      attach_attributes: private
       #before_close: '@loaded=true'
       elements:
       - name: field

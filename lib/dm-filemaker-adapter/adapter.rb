@@ -112,7 +112,7 @@ module DataMapper
         fm_params = prepare_fmp_attributes(attributes)
         counter = 0
         collection.each do |resource|
-          rslt = layout(resource.model).edit(resource._record_id, fm_params, :template=>self.class.fmresultset_template_path)
+          rslt = layout(resource.model).edit(resource.instance_variable_get(:@_record_id), fm_params, :template=>self.class.fmresultset_template_path)
           merge_fmp_response(resource, rslt[0])
           resource.persistence_state = DataMapper::Resource::PersistenceState::Clean.new resource
           counter +=1
@@ -137,7 +137,7 @@ module DataMapper
       def delete(collection)
         counter = 0
         collection.each do |resource|
-          rslt = layout(resource.model).delete(resource._record_id, :template=>self.class.fmresultset_template_path)
+          rslt = layout(resource.model).delete(resource.instance_variable_get(:@_record_id), :template=>self.class.fmresultset_template_path)
           counter +=1
         end
         counter

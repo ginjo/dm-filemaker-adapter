@@ -51,11 +51,11 @@ module DataMapper
   module Model
     attr_accessor :last_query
     alias_method :finalize_orig, :finalize
-    def finalize(*args)
-      property :_record_id, Integer, :lazy=>false, :field=>'record_id'
-      property :_mod_id, Integer, :lazy=>false, :field=>'mod_id'
-      finalize_orig
-    end
+#     def finalize(*args)
+#       property :_record_id, Integer, :lazy=>false, :field=>'record_id'
+#       property :_mod_id, Integer, :lazy=>false, :field=>'mod_id'
+#       finalize_orig
+#     end
     
     # Loads an instance of this Model, taking into account IdentityMap lookup,
     # inheritance columns(s) and Property typecasting.
@@ -146,7 +146,7 @@ module DataMapper
         end
         
         
-        resource.instance_variable_set(:@record, record)
+        # For Testing: resource.instance_variable_set(:@record, record)
         # WBR - Loads portal data into DM model attached to this resource.
         #puts "MODEL#LOAD record #{record.class} portals #{record.portals.keys rescue 'no portals'}"
         #if record.respond_to?(:portals) && record.portals.kind_of?(Hash) && record.portals.any?
@@ -172,7 +172,9 @@ module DataMapper
             puts "ERROR LOADING PORTALS #{$!}"
           end
         end
-
+				resource.instance_variable_set(:@_record_id, record.instance_variable_get(:@record_id))
+				resource.instance_variable_set(:@_mod_id, record.instance_variable_get(:@mod_id))
+				
 
         resource
       end
