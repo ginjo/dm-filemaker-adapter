@@ -1,11 +1,18 @@
 # Property & field names in dm-filemaker-adapter models must be declared lowercase, regardless of what they are in FMP.
 require 'dm-filemaker-adapter/core_patches'
+
+#Rfm::Config::CONFIG_KEYS << 'template'
+Rfm.config :template => File.expand_path('../dm-fmresultset.yml', __FILE__).to_s
+RFM_TEMPLATE = Rfm.config[:template]
+
 module DataMapper
 
   module Adapters
   
     class FilemakerAdapter < AbstractAdapter
-      @fmresultset_template_path = File.expand_path('../dm-fmresultset.yml', __FILE__).to_s
+      @fmresultset_template_path = RFM_TEMPLATE
+      # This doesn't work. Rfm config is not picking up the template.
+      #Rfm.config :template => @fmresultset_template_path
       class << self; attr_accessor :fmresultset_template_path; end
       VERSION = DataMapper::FilemakerAdapter::VERSION
 
@@ -66,8 +73,9 @@ module DataMapper
         prms = query.to_fmp_query
         #puts "ADAPTER#read fmp_query built: #{prms.inspect}"
         rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
-        rslt.dup.each_with_index(){|r, i| rslt[i] = Hash.new.merge(r)}
-        rslt
+        # This was here to make rfm records loadable by dm, but no longer needed with Rfm#record @loaded disabled in parsing template.
+        #rslt.collect{|r| Hash.new.merge(r) }
+        #rslt.to_a
       end
       
       # Takes a query and returns number of matched records.
@@ -104,7 +112,7 @@ module DataMapper
         fm_params = prepare_fmp_attributes(attributes)
         counter = 0
         collection.each do |resource|
-          rslt = layout(resource.model).edit(resource.record_id, fm_params, :template=>self.class.fmresultset_template_path)
+          rslt = layout(resource.model).edit(resource._record_id, fm_params, :template=>self.class.fmresultset_template_path)
           merge_fmp_response(resource, rslt[0])
           resource.persistence_state = DataMapper::Resource::PersistenceState::Clean.new resource
           counter +=1
@@ -129,7 +137,7 @@ module DataMapper
       def delete(collection)
         counter = 0
         collection.each do |resource|
-          rslt = layout(resource.model).delete(resource.record_id, :template=>self.class.fmresultset_template_path)
+          rslt = layout(resource.model).delete(resource._record_id, :template=>self.class.fmresultset_template_path)
           counter +=1
         end
         counter

@@ -56,11 +56,12 @@ elements:
   - name: fetch_size
     accessor: none
 - name: record
-  #attach: [cursor, object, handle_new_record, _attributes]
-  #attach_attributes: none
-  attach: [array, 'Rfm::Record', new, object]
+  #attach: [array, 'Rfm::Record', new, object]
+  attach: [array, 'Hash', new]
+  # This creates a big mess if set to 'private', might be a rfm sax parser issue.
   attach_attributes: hash
-  before_close: '@loaded=true'
+  compact: true
+  #before_close: '@loaded=true'
   elements:
   - name: field
     attach: [cursor, 'Rfm::Metadata::Datum', ':allocate']
@@ -74,10 +75,9 @@ elements:
     delimiter: table
     elements:
     - name: record
-      #class: Rfm::Record
-      attach: [default, 'Rfm::Record', ':allocate']
+      attach: [default, 'Hash', ':allocate']
       attach_attributes: hash
-      before_close: '@loaded=true'
+      #before_close: '@loaded=true'
       elements:
       - name: field
         compact: true
