@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # YAML structure defining a SAX parsing scheme for fmresultset xml.
 # The initial object of this parse should be a new instance of Rfm::Resultset.
+# This template is intended for use with dm-filemaker-adapter, and not as
+# a general Rfm::Resultset template.
 ---
 attach_elements: _meta
 attach_attributes: _meta
@@ -29,10 +31,6 @@ elements:
 - name:  metadata
   attach: none
 - name: field_definition
-  # These two steps can be used to create the attachment to resultset-meta automatically,
-  # but the field-mapping translation won't happen.
-  # attach: [_meta, 'Rfm::Metadata::Field', allocate]
-  # as_name: field_meta
   attach: [cursor, 'Rfm::Metadata::Field', ':allocate']
   delimiter: name
   attach_attributes: private

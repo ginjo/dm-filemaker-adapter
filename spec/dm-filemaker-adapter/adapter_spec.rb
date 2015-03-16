@@ -24,27 +24,6 @@ require 'spec_helper'
 # end
 
 describe DataMapper do
-	before :each do
-		DataMapper.setup(:default, 'filemaker://user:pass@hostname.com/DatabaseName')
-		class ::User
-			include DataMapper::Resource
-			property :id, Serial
-			property :email, String
-			property :username, String
-			property :activated_at, DateTime
-			
-			has n, :orders
-		end
-		class ::Order
-			include DataMapper::Resource
-			property :id, Serial
-			property :total, Decimal
-			property :user_id, Integer
-			
-			belongs_to :user
-		end
-		DataMapper.finalize
-	end
 
 	describe DataMapper::Adapters::FilemakerAdapter do
 
@@ -76,21 +55,22 @@ describe DataMapper do
 				User.all(:id=>1).inspect
 	  	end
 	  	
-			it 'returns related datasets?' do
-				# allow(User.layout).to receive(:find).and_return({
-				# 	'users'=>[{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now}],
-				# 	'orders'=>[{'user_id'=>100, 'total'=>123, 'id'=>999}]
-				# })
-				allow(User.layout).to receive(:find).and_return([
-					{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now, :@orders=>[{'id'=>999, 'user_id'=>100, 'todal'=>123}] }
-				])
-				user = User.get(100)
-				puts "USER"
-				puts user.inspect
-				puts "USER-ORDERS"
-				puts user.instance_variable_get(:@orders).inspect
-				puts user.instance_variables.inspect
-			end
+	  	# Fix this to work with current relationships (not portals).
+			# it 'returns related datasets?' do
+			# 	# allow(User.layout).to receive(:find).and_return({
+			# 	# 	'users'=>[{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now}],
+			# 	# 	'orders'=>[{'user_id'=>100, 'total'=>123, 'id'=>999}]
+			# 	# })
+			# 	allow(User.layout).to receive(:find).and_return([
+			# 		{'id'=>100, 'email'=>'abc@def.com', 'username'=>'abc', 'activated_at'=>DateTime.now, :@orders=>[{'id'=>999, 'user_id'=>100, 'todal'=>123}] }
+			# 	])
+			# 	user = User.get(100)
+			# 	puts "USER"
+			# 	puts user.inspect
+			# 	puts "USER-ORDERS"
+			# 	puts user.instance_variable_get(:@orders).inspect
+			# 	puts user.instance_variables.inspect
+			# end
 	  	
 	  end
 	  
@@ -267,13 +247,20 @@ end # datamapper
 describe Rfm::Resultset do
 	describe '#map' do
 		it 'Adds properties for :_record_id, :_mod_id to resource' do
-			expect(Rfm::Connection).to receive(:http_fetch).and_return(File.read 'spec/data/resultset_with_portals.xml')
-			user = User.all :limit=>1
-			expect(user._record_id).to eq('something')
-			expect(user._mod_id).to eq('something')
+			expect_any_instance_of(Rfm::Connection).to receive(:http_fetch).and_return(RESULT_SET_WITH_PORTALS)
+			project = Project.first
+			expect(project.instance_variable_get(:@_record_id)).to eq('499')
+			expect(project.instance_variable_get(:@_mod_id)).to eq('86')
 		end
 
-		it 'Loads portal records into datamapper resource'
+		it 'Adds properties for :_record_id, :_mod_id to nested (portal) resource' do
+			expect_any_instance_of(Rfm::Connection).to receive(:http_fetch).and_return(RESULT_SET_WITH_PORTALS)
+			project = Project.first
+			#puts project.items.inspect
+			#puts Project.instance_variable_get(:@record).inspect
+			expect(project.items[1].instance_variable_get(:@_record_id)).to eq('2470')
+			expect(project.items[1].instance_variable_get(:@_mod_id)).to eq('137')
+		end
 	end
 end
 

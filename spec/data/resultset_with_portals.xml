@@ -59,6 +59,7 @@
 		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="invoicenumber" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
 		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="servicestotal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
 		<relatedset-definition table="ProjectLineItems">
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::project_id" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
 			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::Category" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
 			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::ItemTitle" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
 			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::ItemNumber" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
@@ -122,7 +123,7 @@
 				<data>Steve </data>
 			</field>
 			<field name="Company::companyName">
-				<data>Corporation of the Fine Arts Museums</data>
+				<data>Fine Arts Museum</data>
 			</field>
 			<field name="ProjectName">
 				<data>Pedestal Frames</data>
@@ -143,7 +144,7 @@
 				<data/>
 			</field>
 			<field name="AccountExecutive">
-				<data>RMahon</data>
+				<data>WBR</data>
 			</field>
 			<field name="ProjectManager">
 				<data/>
@@ -398,7 +399,7 @@
 				<data>San Francisco</data>
 			</field>
 			<field name="Address_COM::adrsStreet">
-				<data>50 Hagiwara Tea Garden Drive</data>
+				<data>123 Elm Street</data>
 			</field>
 			<field name="Address_COM::adrsState">
 				<data>CA</data>
@@ -559,6 +560,9 @@
 			</field>
 			<relatedset count="2" table="ProjectLineItems">
 				<record mod-id="139" record-id="2455">
+					<field name="ProjectLineItems::project_id">
+						<data>499</data>
+					</field>
 					<field name="ProjectLineItems::Category">
 						<data>Environmental Graphics</data>
 					</field>
@@ -579,6 +583,9 @@
 					</field>
 				</record>
 				<record mod-id="137" record-id="2470">
+					<field name="ProjectLineItems::project_id">
+						<data>499</data>
+					</field>
 					<field name="ProjectLineItems::Category">
 						<data>Environmental Graphics</data>
 					</field>

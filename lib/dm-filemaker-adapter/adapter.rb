@@ -1,20 +1,12 @@
 # Property & field names in dm-filemaker-adapter models must be declared lowercase, regardless of what they are in FMP.
 require 'dm-filemaker-adapter/core_patches'
-
-#Rfm::Config::CONFIG_KEYS << 'template'
-Rfm.config :template => File.expand_path('../dm-fmresultset.yml', __FILE__).to_s
-RFM_TEMPLATE = Rfm.config[:template]
-
 module DataMapper
 
   module Adapters
   
     class FilemakerAdapter < AbstractAdapter
-      @fmresultset_template_path = RFM_TEMPLATE
-      # This doesn't work. Rfm config is not picking up the template.
-      #Rfm.config :template => @fmresultset_template_path
-      class << self; attr_accessor :fmresultset_template_path; end
       VERSION = DataMapper::FilemakerAdapter::VERSION
+      FMRESULTSET_TEMPLATE = {:template => File.expand_path('../dm-fmresultset.yml', __FILE__)}
 
 
       ###  ADAPTER CORE METHODS  ###
@@ -38,7 +30,7 @@ module DataMapper
         counter = 0
         resources.each do |resource|
           fm_params = prepare_fmp_attributes(resource.dirty_attributes)
-          rslt = layout(resource.model).create(fm_params, :template=>self.class.fmresultset_template_path)
+          rslt = layout(resource.model).create(fm_params)
           merge_fmp_response(resource, rslt[0])
           counter +=1
         end
@@ -68,10 +60,11 @@ module DataMapper
         #puts query.to_yaml
         _layout = layout(query.model)
         opts = query.fmp_options
-        #puts "FMP OPTIONS #{opts.inspect}"
-        opts[:template] = self.class.fmresultset_template_path
+        #puts "ADAPTER#READ fmp options: #{opts.inspect}"
+        #opts[:template] = self.class.fmresultset_template_path
         prms = query.to_fmp_query
-        #puts "ADAPTER#read fmp_query built: #{prms.inspect}"
+        #puts "ADAPTER#READ fmpquery: #{prms.inspect}"
+        #puts "ADAPTER#READ layout config: #{_layout.get_config.inspect}"
         rslt = prms.empty? ? _layout.all(opts) : _layout.find(prms, opts)
         # This was here to make rfm records loadable by dm, but no longer needed with Rfm#record @loaded disabled in parsing template.
         #rslt.collect{|r| Hash.new.merge(r) }
@@ -85,7 +78,7 @@ module DataMapper
         #y query
         _layout = layout(query.model)
         opts = query.fmp_options
-        opts[:template] = self.class.fmresultset_template_path
+        #opts[:template] = self.class.fmresultset_template_path
         prms = query.to_fmp_query
         #[prms.empty? ? _layout.all(:max_records=>0).foundset_count : _layout.count(prms)]
         [prms.empty? ? _layout.view.total_count : _layout.count(prms)]
@@ -112,7 +105,7 @@ module DataMapper
         fm_params = prepare_fmp_attributes(attributes)
         counter = 0
         collection.each do |resource|
-          rslt = layout(resource.model).edit(resource.instance_variable_get(:@_record_id), fm_params, :template=>self.class.fmresultset_template_path)
+          rslt = layout(resource.model).edit(resource.instance_variable_get(:@_record_id), fm_params)
           merge_fmp_response(resource, rslt[0])
           resource.persistence_state = DataMapper::Resource::PersistenceState::Clean.new resource
           counter +=1
@@ -137,7 +130,7 @@ module DataMapper
       def delete(collection)
         counter = 0
         collection.each do |resource|
-          rslt = layout(resource.model).delete(resource.instance_variable_get(:@_record_id), :template=>self.class.fmresultset_template_path)
+          rslt = layout(resource.model).delete(resource.instance_variable_get(:@_record_id))
           counter +=1
         end
         counter
@@ -233,7 +226,7 @@ module DataMapper
       # Class methods extended onto model subclass.
       module ModelMethods
         def layout
-          @layout ||= Rfm.layout(storage_name, repository.adapter.options.symbolize_keys)
+          @layout ||= Rfm.layout(storage_name, repository.adapter.options.merge(FMRESULTSET_TEMPLATE).symbolize_keys)
         end
         
         # Not how to do this. Doesn't work anywhere I've tried it:
