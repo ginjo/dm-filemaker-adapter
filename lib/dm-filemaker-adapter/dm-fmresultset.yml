@@ -58,7 +58,6 @@ elements:
 - name: record
   #attach: [array, 'Rfm::Record', new, object]
   attach: [array, 'Hash', new]
-  # This creates a big mess if set to 'private', might be a rfm sax parser issue.
   attach_attributes: private
   compact: true
   #before_close: '@loaded=true'
@@ -68,7 +67,7 @@ elements:
     compact: false
     before_close: [object, field_element_close_callback, self]
   - name: relatedset
-    attach: [private, Array, ':allocate']
+    attach: [private, 'Rfm::Resultset', ':allocate']
     as_name: portals
     attach_attributes: private
     create_accessors: all

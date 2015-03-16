@@ -262,3 +262,22 @@ describe DataMapper do
 	# end
 	
 end # datamapper
+
+
+describe Rfm::Resultset do
+	describe '#map' do
+		it 'Adds properties for :_record_id, :_mod_id to resource' do
+			expect(Rfm::Connection).to receive(:http_fetch).and_return(File.read 'spec/data/resultset_with_portals.xml')
+			user = User.all :limit=>1
+			expect(user._record_id).to eq('something')
+			expect(user._mod_id).to eq('something')
+		end
+
+		it 'Loads portal records into datamapper resource'
+	end
+end
+
+
+
+
+

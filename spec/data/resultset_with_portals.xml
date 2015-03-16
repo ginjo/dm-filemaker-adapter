@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE fmresultset PUBLIC "-//FMI//DTD fmresultset//EN" "https://my.domain.com:443/fmi/xml/fmresultset.dtd">
+<fmresultset xmlns="http://www.filemaker.com/xml/fmresultset" version="1.0">
+	<error code="0"/>
+	<product build="09/14/2011" name="FileMaker Web Publishing Engine" version="11.0.4.400"/>
+	<datasource database="SplashDev" date-format="MM/dd/yyyy" layout="Project Data Entry New" table="Project" time-format="HH:mm:ss" timestamp-format="MM/dd/yyyy HH:mm:ss" total-count="3475"/>
+	<metadata>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::ItemTitle" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::ItemNumber" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::NumberOfDuplicates" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Person_PRO::nameFirstLast" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Company::companyName" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectName" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::NumberOfOriginals" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::Revision" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::desiredsqfttotal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::YourSquareFootPrice" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ClientPO" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="AccountExecutive" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectManager" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="AccountManager" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectDiscountPercent" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<relatedset-definition table="Telecom_PER_PRO">
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Telecom_PER_PRO::teleNumber" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Telecom_PER_PRO::teleType" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		</relatedset-definition>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="QuoteSummary" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectNumber" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::EstimatorsSquareFootPrice" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::DesiredSqFtPrice" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::Category" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="yes" max-repeat="201" name="SR_SearchResults::SR_ResultText[81]" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="yes" max-repeat="1" name="SR_SearchResults::SR_SearchString" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="yes" max-repeat="1" name="ProjectLineItems::JumpToItemNumberGlobal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="yes" max-repeat="1" name="PreviewQuoteGlobalSelection" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::partold" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="QuoteSummary" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="yes" max-repeat="1" name="ProjectLineItems::JumpToProjectNumberGlobal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Tax" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Address_COM::adrsCity" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Address_COM::adrsStreet" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Address_COM::adrsState" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Address_COM::adrsZIP" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Address_COM::adrsCounty" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="CompletionDate" not-empty="no" numeric-only="no" result="date" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="PreviewTime" not-empty="no" numeric-only="no" result="time" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ShipDate" not-empty="no" numeric-only="no" result="date" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ShipTime" not-empty="no" numeric-only="no" result="time" time-of-day="no" type="normal"/>
+		<relatedset-definition table="Schedule_PRO">
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Schedule_PRO::Order" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Schedule_PRO::OriginalDate" not-empty="no" numeric-only="no" result="date" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Schedule_PRO::part" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Schedule_PRO::Time" not-empty="no" numeric-only="no" result="time" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Schedule_PRO::TypeOfDate" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		</relatedset-definition>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="turnaround" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Rush" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="InvoiceDate" not-empty="no" numeric-only="no" result="date" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="invoicenumber" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="servicestotal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		<relatedset-definition table="ProjectLineItems">
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::Category" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::ItemTitle" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::ItemNumber" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::QuotedTotal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::Revision" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::Suggested Total Price" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		</relatedset-definition>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="locationoffiles" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="bleed" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="printer" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="zund" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="todo" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<relatedset-definition table="Note_PRO">
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="Note_PRO::noteBody" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Note_PRO::creatDate" not-empty="no" numeric-only="no" result="date" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="Note_PRO::creatUser" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		</relatedset-definition>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="zundnote" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="CompletionDate" not-empty="no" numeric-only="no" result="date" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="PreviewTime" not-empty="no" numeric-only="no" result="time" time-of-day="no" type="normal"/>
+		<relatedset-definition table="ProjectLineItemsSubItems_PLI">
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::SpecialPrintingInstructions" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::Duplicates" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::producetotal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::filename" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="calculation"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::Width" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="yes" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::Height" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::proofwidth" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::proofheight" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::Substrate" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::bleed" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::filetype" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItemsSubItems_PLI::proofcycle" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+		</relatedset-definition>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ShipDate" not-empty="no" numeric-only="no" result="date" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ShipTime" not-empty="no" numeric-only="no" result="time" time-of-day="no" type="normal"/>
+		<relatedset-definition table="BuyOuts">
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="BuyOuts::Buyout per Unit" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="BuyOuts::PurchaseOrderNumber" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="BuyOuts::Buyout Cost" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="BuyOuts::BuyoutMarkup" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+			<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="BuyOuts::Buyout Price" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		</relatedset-definition>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::BuyoutPriceTotal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="ProjectLineItems::BuyoutCostTotal" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="calculation"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="creditapproved" not-empty="no" numeric-only="no" result="text" time-of-day="no" type="normal"/>
+		<field-definition auto-enter="no" four-digit-year="no" global="no" max-repeat="1" name="creditlimit" not-empty="no" numeric-only="no" result="number" time-of-day="no" type="normal"/>
+	</metadata>
+	<resultset count="1" fetch-size="1">
+		<record mod-id="86" record-id="499">
+			<field name="ProjectLineItems::ItemTitle">
+				<data>Pedestal Frames</data>
+			</field>
+			<field name="ProjectLineItems::ItemNumber">
+				<data>1</data>
+			</field>
+			<field name="ProjectLineItems::NumberOfDuplicates">
+				<data/>
+			</field>
+			<field name="Person_PRO::nameFirstLast">
+				<data>Steve </data>
+			</field>
+			<field name="Company::companyName">
+				<data>Corporation of the Fine Arts Museums</data>
+			</field>
+			<field name="ProjectName">
+				<data>Pedestal Frames</data>
+			</field>
+			<field name="ProjectLineItems::NumberOfOriginals">
+				<data>4</data>
+			</field>
+			<field name="ProjectLineItems::Revision">
+				<data>A</data>
+			</field>
+			<field name="ProjectLineItems::desiredsqfttotal">
+				<data/>
+			</field>
+			<field name="ProjectLineItems::YourSquareFootPrice">
+				<data/>
+			</field>
+			<field name="ClientPO">
+				<data/>
+			</field>
+			<field name="AccountExecutive">
+				<data>RMahon</data>
+			</field>
+			<field name="ProjectManager">
+				<data/>
+			</field>
+			<field name="AccountManager">
+				<data/>
+			</field>
+			<field name="ProjectDiscountPercent">
+				<data/>
+			</field>
+			<relatedset count="0" table="Telecom_PER_PRO"/>
+			<field name="QuoteSummary">
+				<data>776</data>
+			</field>
+			<field name="ProjectNumber">
+				<data>1444</data>
+			</field>
+			<field name="ProjectLineItems::EstimatorsSquareFootPrice">
+				<data/>
+			</field>
+			<field name="ProjectLineItems::DesiredSqFtPrice">
+				<data/>
+			</field>
+			<field name="ProjectLineItems::Category">
+				<data>Environmental Graphics</data>
+			</field>
+			<field name="SR_SearchResults::SR_ResultText[81]">
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+				<data/>
+			</field>
+			<field name="SR_SearchResults::SR_SearchString">
+				<data/>
+			</field>
+			<field name="ProjectLineItems::JumpToItemNumberGlobal">
+				<data/>
+			</field>
+			<field name="PreviewQuoteGlobalSelection">
+				<data>Detail</data>
+			</field>
+			<field name="ProjectLineItems::partold">
+				<data>0</data>
+			</field>
+			<field name="QuoteSummary">
+				<data>776</data>
+			</field>
+			<field name="ProjectLineItems::JumpToProjectNumberGlobal">
+				<data/>
+			</field>
+			<field name="Tax">
+				<data/>
+			</field>
+			<field name="Address_COM::adrsCity">
+				<data>San Francisco</data>
+			</field>
+			<field name="Address_COM::adrsStreet">
+				<data>50 Hagiwara Tea Garden Drive</data>
+			</field>
+			<field name="Address_COM::adrsState">
+				<data>CA</data>
+			</field>
+			<field name="Address_COM::adrsZIP">
+				<data>94118-4501</data>
+			</field>
+			<field name="Address_COM::adrsCounty">
+				<data>San Francisco</data>
+			</field>
+			<field name="CompletionDate">
+				<data>04/14/2010</data>
+			</field>
+			<field name="PreviewTime">
+				<data/>
+			</field>
+			<field name="ShipDate">
+				<data>04/14/2010</data>
+			</field>
+			<field name="ShipTime">
+				<data>12:00:00</data>
+			</field>
+			<relatedset count="7" table="Schedule_PRO">
+				<record mod-id="5" record-id="2529">
+					<field name="Schedule_PRO::Order">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::OriginalDate">
+						<data>04/14/2010</data>
+					</field>
+					<field name="Schedule_PRO::part">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::Time">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::TypeOfDate">
+						<data>Completion Date</data>
+					</field>
+				</record>
+				<record mod-id="5" record-id="2530">
+					<field name="Schedule_PRO::Order">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::OriginalDate">
+						<data>04/14/2010</data>
+					</field>
+					<field name="Schedule_PRO::part">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::Time">
+						<data>12:00:00</data>
+					</field>
+					<field name="Schedule_PRO::TypeOfDate">
+						<data>Ship Date</data>
+					</field>
+				</record>
+				<record mod-id="5" record-id="2531">
+					<field name="Schedule_PRO::Order">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::OriginalDate">
+						<data>04/14/2010</data>
+					</field>
+					<field name="Schedule_PRO::part">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::Time">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::TypeOfDate">
+						<data>Due to Client</data>
+					</field>
+				</record>
+				<record mod-id="5" record-id="2532">
+					<field name="Schedule_PRO::Order">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::OriginalDate">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::part">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::Time">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::TypeOfDate">
+						<data>Show Start</data>
+					</field>
+				</record>
+				<record mod-id="5" record-id="2533">
+					<field name="Schedule_PRO::Order">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::OriginalDate">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::part">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::Time">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::TypeOfDate">
+						<data>Show End</data>
+					</field>
+				</record>
+				<record mod-id="5" record-id="2534">
+					<field name="Schedule_PRO::Order">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::OriginalDate">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::part">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::Time">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::TypeOfDate">
+						<data>Install</data>
+					</field>
+				</record>
+				<record mod-id="5" record-id="2535">
+					<field name="Schedule_PRO::Order">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::OriginalDate">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::part">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::Time">
+						<data/>
+					</field>
+					<field name="Schedule_PRO::TypeOfDate">
+						<data>Dismantle</data>
+					</field>
+				</record>
+			</relatedset>
+			<field name="turnaround">
+				<data/>
+			</field>
+			<field name="Rush">
+				<data/>
+			</field>
+			<field name="InvoiceDate">
+				<data/>
+			</field>
+			<field name="invoicenumber">
+				<data/>
+			</field>
+			<field name="servicestotal">
+				<data/>
+			</field>
+			<relatedset count="2" table="ProjectLineItems">
+				<record mod-id="139" record-id="2455">
+					<field name="ProjectLineItems::Category">
+						<data>Environmental Graphics</data>
+					</field>
+					<field name="ProjectLineItems::ItemTitle">
+						<data>Pedestal Frames</data>
+					</field>
+					<field name="ProjectLineItems::ItemNumber">
+						<data>1</data>
+					</field>
+					<field name="ProjectLineItems::QuotedTotal">
+						<data>728</data>
+					</field>
+					<field name="ProjectLineItems::Revision">
+						<data>A</data>
+					</field>
+					<field name="ProjectLineItems::Suggested Total Price">
+						<data>0</data>
+					</field>
+				</record>
+				<record mod-id="137" record-id="2470">
+					<field name="ProjectLineItems::Category">
+						<data>Environmental Graphics</data>
+					</field>
+					<field name="ProjectLineItems::ItemTitle">
+						<data>Shipping</data>
+					</field>
+					<field name="ProjectLineItems::ItemNumber">
+						<data>2</data>
+					</field>
+					<field name="ProjectLineItems::QuotedTotal">
+						<data>48</data>
+					</field>
+					<field name="ProjectLineItems::Revision">
+						<data>A</data>
+					</field>
+					<field name="ProjectLineItems::Suggested Total Price">
+						<data>0</data>
+					</field>
+				</record>
+			</relatedset>
+			<field name="locationoffiles">
+				<data/>
+			</field>
+			<field name="bleed">
+				<data/>
+			</field>
+			<field name="printer">
+				<data/>
+			</field>
+			<field name="zund">
+				<data/>
+			</field>
+			<field name="todo">
+				<data/>
+			</field>
+			<relatedset count="0" table="Note_PRO"/>
+			<relatedset count="0" table="Note_PRO"/>
+			<field name="zundnote">
+				<data/>
+			</field>
+			<field name="CompletionDate">
+				<data>04/14/2010</data>
+			</field>
+			<field name="PreviewTime">
+				<data/>
+			</field>
+			<relatedset count="5" table="ProjectLineItemsSubItems_PLI">
+				<record mod-id="7" record-id="2880">
+					<field name="ProjectLineItemsSubItems_PLI::SpecialPrintingInstructions">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Duplicates">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::producetotal">
+						<data>1</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filename">
+						<data>1444-1.1rf</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Width">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Height">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofwidth">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofheight">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Substrate">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::bleed">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filetype">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofcycle">
+						<data/>
+					</field>
+				</record>
+				<record mod-id="7" record-id="2881">
+					<field name="ProjectLineItemsSubItems_PLI::SpecialPrintingInstructions">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Duplicates">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::producetotal">
+						<data>1</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filename">
+						<data>1444-1.2rf</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Width">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Height">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofwidth">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofheight">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Substrate">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::bleed">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filetype">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofcycle">
+						<data/>
+					</field>
+				</record>
+				<record mod-id="7" record-id="2882">
+					<field name="ProjectLineItemsSubItems_PLI::SpecialPrintingInstructions">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Duplicates">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::producetotal">
+						<data>1</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filename">
+						<data>1444-1.3rf</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Width">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Height">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofwidth">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofheight">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Substrate">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::bleed">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filetype">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofcycle">
+						<data/>
+					</field>
+				</record>
+				<record mod-id="7" record-id="2883">
+					<field name="ProjectLineItemsSubItems_PLI::SpecialPrintingInstructions">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Duplicates">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::producetotal">
+						<data>1</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filename">
+						<data>1444-1.4rf</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Width">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Height">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofwidth">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofheight">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Substrate">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::bleed">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filetype">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofcycle">
+						<data/>
+					</field>
+				</record>
+				<record mod-id="7" record-id="2884">
+					<field name="ProjectLineItemsSubItems_PLI::SpecialPrintingInstructions">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Duplicates">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::producetotal">
+						<data>1</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filename">
+						<data>1444-2.1rf</data>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Width">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Height">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofwidth">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofheight">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::Substrate">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::bleed">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::filetype">
+						<data/>
+					</field>
+					<field name="ProjectLineItemsSubItems_PLI::proofcycle">
+						<data/>
+					</field>
+				</record>
+			</relatedset>
+			<field name="ShipDate">
+				<data>04/14/2010</data>
+			</field>
+			<field name="ShipTime">
+				<data>12:00:00</data>
+			</field>
+			<relatedset count="1" table="BuyOuts">
+				<record mod-id="0" record-id="204">
+					<field name="BuyOuts::Buyout per Unit">
+						<data>CGE Marketing</data>
+					</field>
+					<field name="BuyOuts::PurchaseOrderNumber">
+						<data/>
+					</field>
+					<field name="BuyOuts::Buyout Cost">
+						<data/>
+					</field>
+					<field name="BuyOuts::BuyoutMarkup">
+						<data/>
+					</field>
+					<field name="BuyOuts::Buyout Price">
+						<data/>
+					</field>
+				</record>
+			</relatedset>
+			<field name="ProjectLineItems::BuyoutPriceTotal">
+				<data/>
+			</field>
+			<field name="ProjectLineItems::BuyoutCostTotal">
+				<data/>
+			</field>
+			<field name="creditapproved">
+				<data/>
+			</field>
+			<field name="creditlimit">
+				<data/>
+			</field>
+		</record>
+	</resultset>
+</fmresultset>
