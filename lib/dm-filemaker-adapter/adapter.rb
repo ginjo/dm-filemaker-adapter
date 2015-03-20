@@ -26,7 +26,7 @@ module DataMapper
       #
       # @api semipublic
       def create(resources)
-        resources[0].model.last_query = resources
+        #resources[0].model.last_query = resources
         counter = 0
         resources.each do |resource|
           fm_params = prepare_fmp_attributes(resource.dirty_attributes)
@@ -56,7 +56,7 @@ module DataMapper
       # end
       #
       def read(query)
-        query.model.last_query = query
+        #query.model.last_query = query
         #puts query.to_yaml
         _layout = layout(query.model)
         opts = query.fmp_options
@@ -74,7 +74,7 @@ module DataMapper
       # Takes a query and returns number of matched records.
       # An empty query will return the total record count
       def aggregate(query)
-        query.model.last_query = query
+        #query.model.last_query = query
         #y query
         _layout = layout(query.model)
         opts = query.fmp_options
@@ -101,7 +101,7 @@ module DataMapper
       #
       # @api semipublic
       def update(attributes, collection)
-        collection[0].model.last_query = [attributes, collection]
+        #collection[0].model.last_query = [attributes, collection]
         fm_params = prepare_fmp_attributes(attributes)
         counter = 0
         collection.each do |resource|
