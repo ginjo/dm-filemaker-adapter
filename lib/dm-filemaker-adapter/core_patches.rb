@@ -146,12 +146,13 @@ module Rfm
 	  def map
 	    super do |record|
 	      resource = yield(record)
+	      #puts "DM INPUT RECORD: #{record.class} #{record.instance_variable_get(:@record_id)}"
 
 				if resource.kind_of?(DataMapper::Resource)
 					#puts "MODEL#LOAD custom processing RECORD #{record.class} RESOURCE #{resource.class}"
 					#puts record.inspect
 	        # For Testing:
-	        resource.instance_variable_set(:@record, record)
+	        #resource.instance_variable_set(:@record, record)
 	        # WBR - Loads portal data into DM model attached to this resource.
 	        portals = record.instance_variable_get(:@portals)
 	        #puts "MODEL#LOAD record #{record.class} portals #{portals.keys rescue 'no portals'}"
@@ -163,7 +164,8 @@ module Rfm
 	          portal_keys = portals.keys
 	          #puts "PORTALS: #{portal_keys}"
 	          portal_keys.each do |portal_key|
-	          	relat = model.relationships.to_a.find{|r| storage_name = r.child_model.storage_names[:default]; portal_key.to_s == storage_name }
+	          	#relat = model.relationships.to_a.find{|r| storage_name = r.child_model.storage_names[:default]; portal_key.to_s == storage_name }
+	          	relat = model.relationships.to_a.find{|r| storage_name = r.child_model.storage_name; portal_key.to_s == storage_name }
 	          	if relat
 		          	#puts "BUILDING RELATIONSHIP FROM PORTAL: #{relat.name} #{relat.child_model.name}"
 		          	resource.instance_variable_set(relat.instance_variable_name, relat.child_model.load(record.instance_variable_get(:@portals)[portal_key], relat.child_model.query) )
