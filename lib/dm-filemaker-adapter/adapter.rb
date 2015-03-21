@@ -6,6 +6,7 @@ module DataMapper
   
     class FilemakerAdapter < AbstractAdapter
       VERSION = DataMapper::FilemakerAdapter::VERSION
+      
       FMRESULTSET_TEMPLATE = {:template => File.expand_path('../dm-fmresultset.yml', __FILE__)}
 
 
@@ -228,10 +229,6 @@ module DataMapper
         def layout
           @layout ||= Rfm.layout(storage_name, repository.adapter.options.merge(FMRESULTSET_TEMPLATE).symbolize_keys)
         end
-        
-        # Not how to do this. Doesn't work anywhere I've tried it:
-				#extend Forwardable
-				#def_delegators :layout, *layout.class.instance_methods.select {|m| m.to_s[/^[a-z]/]}
       end
       
       # Instance methods included in model.

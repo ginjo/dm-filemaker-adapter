@@ -139,6 +139,20 @@ module DataMapper
 end # DataMapper
 
 module Rfm
+
+	# Monkey patch for Rfm <= v3.0.8. (Rfm v1 or v2 will not work for DM)
+	if (Rfm::VERSION.major.to_i == 3 and Rfm::VERSION.minor.to_i < 1 and Rfm::VERSION.patch.to_i < 9)
+		Rfm::Connection.class_eval do
+			Rfm::SaxParser::TEMPLATE_PREFIX.replace ''
+			alias_method :parse_original, :parse
+			def parse(*args)
+				args[0] = DataMapper::Adapters::FilemakerAdapter::FMRESULTSET_TEMPLATE[:template]
+				parse_original(*args)
+			end
+		end
+	end
+
+
 	class Resultset
 	  
 	  # Does custom processing during each record-to-resource translation done in DataMapper::Model#load
@@ -152,27 +166,30 @@ module Rfm
 					#puts "MODEL#LOAD custom processing RECORD #{record.class} RESOURCE #{resource.class}"
 					#puts record.inspect
 	        # For Testing:
-	        #resource.instance_variable_set(:@record, record)
+	        resource.instance_variable_set(:@record, record)
 	        # WBR - Loads portal data into DM model attached to this resource.
 	        portals = record.instance_variable_get(:@portals)
-	        #puts "MODEL#LOAD record #{record.class} portals #{portals.keys rescue 'no portals'}"
+	        #puts "MODEL#LOAD record: #{record.class} portals: #{portals.keys rescue 'no portals'}"
 	        #if record.respond_to?(:portals) && record.portals.kind_of?(Hash) && record.portals.any?
 	        model = resource.class
+	        return unless model.kind_of?(DataMapper::Model)
+	        #puts "MODEL#LOAD resource class: #{model}"
 	        if portals.kind_of?(Hash) && portals.any?
 	          begin
-	          #puts record.portals.to_yaml
-	          portal_keys = portals.keys
-	          #puts "PORTALS: #{portal_keys}"
-	          portal_keys.each do |portal_key|
-	          	#relat = model.relationships.to_a.find{|r| storage_name = r.child_model.storage_names[:default]; portal_key.to_s == storage_name }
-	          	relat = model.relationships.to_a.find{|r| storage_name = r.child_model.storage_name; portal_key.to_s == storage_name }
-	          	if relat
-		          	#puts "BUILDING RELATIONSHIP FROM PORTAL: #{relat.name} #{relat.child_model.name}"
-		          	resource.instance_variable_set(relat.instance_variable_name, relat.child_model.load(record.instance_variable_get(:@portals)[portal_key], relat.child_model.query) )
-	          	end
-	          end
+		          #puts record.portals.to_yaml
+		          portal_keys = portals.keys
+		          #puts "PORTALS: #{portal_keys}"
+		          portal_keys.each do |portal_key|
+		          	#relat = model.relationships.to_a.find{|r| storage_name = r.child_model.storage_names[:default]; portal_key.to_s == storage_name }
+		          	relat = model.relationships.to_a.find{|r| storage_name = r.child_model.storage_name; portal_key.to_s == storage_name }
+		          	if relat
+			          	#puts "BUILDING RELATIONSHIP FROM PORTAL: #{relat.name} #{relat.child_model.name}"
+			          	resources_from_portal = relat.child_model.load(record.instance_variable_get(:@portals)[portal_key], relat.child_model.query)
+			          	resource.instance_variable_set(relat.instance_variable_name, resources_from_portal)
+		          	end
+		          end
 	          rescue
-	            puts "ERROR LOADING PORTALS #{$!}"
+	            #puts "ERROR LOADING PORTALS #{$!}"
 	          end
 	        end
 					resource.instance_variable_set(:@_record_id, record.instance_variable_get(:@record_id))
